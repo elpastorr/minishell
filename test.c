@@ -30,20 +30,242 @@ char	*ft_strndup(const char *s, int n)
 	return (str);
 }
 
-void	skip_cot(char *s, int *i)
+int	quot_status(char *s, int i)
 {
-	char	cot;
+	int		j;
+	char	quot;
 
-	cot = s[*i];
+	j = 0;
+	quot = 0;
+	while (s[j] && j < i)
+	{
+		if (s[j] == '"' || s[j] == '\'')
+		{
+			if (quot == 0)
+				quot = s[j];
+			else if (quot == s[j])
+				quot = 0;
+		}
+		j++;
+	}
+	if (quot == '\'')
+		return (1);
+	if (quot == '"')
+		return (2);
+	return (0);
+}
+
+void	skip_quot(char *s, int *i)
+{
+	char	quot;
+
+	quot = s[*i];
 	(*i)++;
 	while (s[*i])
 	{
-		if (s[*i] == cot)
+		if (s[*i] == quot)
 		{
 			(*i)++;
 			break ;
 		}
 		(*i)++;
+	}
+}
+
+void	get_type(t_token *tmp, int *f_in, int *f_out)
+{
+	if (!ft_strcmp(tmp->str, ">>"))
+		tmp->type = rdout;
+	else if (!ft_strcmp(tmp->str, "<<"))
+		tmp->type = rdin;
+	else if (!ft_strcmp(tmp->str, ">"))
+		tmp->type = rout;
+	else if (!ft_strcmp(tmp->str, "<"))
+		tmp->type = rin;
+	else if (!ft_strcmp(tmp->str, "|"))
+		tmp->type = pip;
+	else
+	{
+		if (*f_in == 1)
+		{
+			tmp->type = fin;
+			*f_in = 0;
+		}
+		else if (*f_out == 1)
+		{
+			tmp->type = fout;
+			*f_out = 0;
+		}
+		else
+			tmp->type = word;
+	}
+}
+
+int	token_syntax(t_token *token)
+{
+	t_token	*tmp;
+	int		ret;
+
+	tmp = token;
+	ret = 0;
+	if (!token)
+		return (NULL);
+	if (tmp->type == pip)
+		ret = 1;
+	while (tmp && !ret)
+	{
+		if ((tmp->type == pip && !tmp->next) || (tmp->type >= pip && tmp->next && tmp->next->type >= pip))
+			ret = 1;
+		if (!tmp->next)
+			break ;
+		tmp = tmp->next;
+	}
+	if (!ret)
+		return (token);
+	printf("Minishell: parse error near '%s'\n", tmp->str);
+	// exitfree();
+	return (NULL);
+}
+
+t_token	*new_token(t_token *next, char *str, int type)
+{
+	t_token	*tmp;
+
+	tmp = malloc(sizeof(t_token));
+	if (!tmp)
+		return (NULL);
+	tmp->type = type;
+	tmp->str = str;
+	tmp->fd = 1;
+	tmp->next = next;
+	return (tmp);
+}
+
+
+
+
+
+void	del_unquot_extra(char *s, int *i, int *j, char quot)
+{
+	int	len;
+
+	if (s[*j] == quot && s[*i] == quot)
+	{
+		while (s[*j])
+		{
+			s[*j] = s[*j + 1];
+			(*j)++;
+		}
+		len == --(*i) - 1;
+		while (s[*i])
+		{
+			s[*i] = s[*i + 1];
+			(*i)++;
+		}
+		s[*i - 1] = '\0';
+		*i = len;
+	}
+}
+
+char	*del_unused_quot(char *s)
+{
+	char	*tmp;
+	char	quot;
+	int		i;
+	int		j;
+
+	i = 0;
+	if (!s)
+		return (NULL);
+	while (s[i])
+	{
+		if (s[i] == '"' || s[i] == '\'')
+		{
+			quot = s[i];
+			j = i++;
+			while (s[i] && s[i] != quot)
+				i++;
+			del_unquot_extra(s, &i, &j, quot);
+		}
+		else
+			i++;
+	}
+	tmp = ft_strdup(s);
+	if (s)
+		free(s);
+	return (tmp);
+}
+
+char	*expand_special()
+
+char	*expand_extra()
+
+char	*replace_str()
+
+char	*expend_words(char *s, int i)
+{
+	char	*util;
+	char	*tmp;
+	int		j;
+
+	tmp = ft_strdup(s);
+	if (s)
+		free(s);
+	if (!tmp)
+		return (NULL);
+	j = i + 1;
+	if (tmp[j] == '?' || tmp[j] == '$' || tmp[j] == '0')
+		util = expand_special(tmp, NULL, &j);
+	else
+		util = expand_extra(tmp, NULL, &j, i);
+	tmp = replace_str(tmp, util, j, i);
+	if (util)
+		free(util);
+	if (!tmp)
+		return (NULL);
+	return (del_unused_quot(tmp));
+}
+
+void	tokenize(t_token *token)
+{
+	t_token	*tmp;
+	int		f_in;
+	int		f_out;
+
+	tmp = token;
+	f_in = 0;
+	f_out = 0;
+	while (tmp)
+	{
+		get_type(tmp, f_in, f_out);
+		if (tmp->type == rdout || tmp->type == rout || tmp->type == rin)
+			f_in = 1;
+		if (tmp->type == rdin)
+			f_out = 1;
+		tmp = tmp->next;
+	}
+	if (!token_syntax(token))
+		return ;
+	tokenizer(token);
+}
+
+void	tokenizing(t_token *token)
+{
+	t_token	*tmp;
+	int		i;
+
+	tmp = token;
+	while (tmp)
+	{
+		if (tmp->type == word || tmp->type == fout)
+		{
+			i = 0;
+			while (tmp->str && tmp->str[i])
+			{
+				if (tmp->str[i] == '$' && quot_status(tmp->str, i) != 1 && (ft_isalnum(tmp->str[i + 1]) || tmp->str[i + 1] == '_' || tmp->str[i + 1] == '?' || tmp->str[i + 1] == '$'))
+					tmp->str = expend_words(tmmp->str, i);
+			}
+		}
 	}
 }
 
@@ -75,16 +297,16 @@ void	split_words(char *s, int i, int start)
 	char	*str;
 
 	get_word_index(s, &i, &start);
-	printf("|%s|\n", strndup(&s[start], i - start));
+	token = new_token(NULL, strndup(&s[start], i - start), 0);
 	while (s[i])
 	{
 		get_word_index(s, &i, &start);
 		if (i > start)
 		{
+			token = new_token(NULL, strndup(&s[start], i - start), 0);
 			printf("|%s|\n", strndup(&s[start], i - start));
 		}
 	}
-	// token = new_token(NULL, strndup(&s[start], i - start), 0);
 }
 
 void    loop(void)
@@ -99,6 +321,7 @@ void    loop(void)
 			return ;
 		// add_history(s); //??
 		split_words(s, 0, 0);
+		free(s);
 	}
 }
 
