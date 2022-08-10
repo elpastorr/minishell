@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/08/10 17:20:44 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/10 19:36:20 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,11 @@ char	*del_unused_quot(char *s);
 void	del_unquot_extra(char *s, int *i, int *j, char quot);
 void	get_type(t_token *tmp, int *f_in, int *f_out);
 
+t_env	*init_env(t_env *next, char *name, char *content);
+static t_env	*init_handler(char **env, int *exit_status);
+
+char	*get_name(char *env);
+char	*get_content(char *env);
 
 char	*expand_special(char *tmp, char *util, int *j);
 char	*expand_extra(char *tmp, char *util, int *j, int i);

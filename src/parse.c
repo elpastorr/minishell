@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/10 17:21:25 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/10 19:03:29 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,29 @@ void	split_words(char *s, int i, int start)
 {
 	t_token	*token;
 	t_token	*tmp;
-	char	*str;
 
+	if (!s)
+		return ;
+	if (!s[0])
+		return (free(s));
 	get_word_index(s, &i, &start);
 	token = new_token(NULL, strndup(&s[start], i - start), 0);
+	tmp = token;
 	while (s[i])
 	{
 		get_word_index(s, &i, &start);
 		if (i > start)
 		{
 			token = new_token(NULL, strndup(&s[start], i - start), 0);
-			printf("|%s|\n", strndup(&s[start], i - start));
+			token = token->next;
+			// if (!token)
+				// exitfree();
 		}
 	}
+	ft_memdel((void **)&s);
+	tokenize(tmp);
 }
+
 
 void	get_word_index(char *s, int *i, int *start)
 {
@@ -45,7 +54,7 @@ void	get_word_index(char *s, int *i, int *start)
 		while (s[*i] && s[*i] != '|' && s[*i] != '<' && s[*i] != '>' && s[*i] != ' ' && s[*i] != '\t')
 		{
 			if (s[*i] == '"' || s[*i] == '\'')
-				skip_cot(s, i);
+				skip_quot(s, i);
 			else
 				(*i)++;
 		}
