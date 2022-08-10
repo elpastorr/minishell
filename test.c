@@ -196,11 +196,99 @@ char	*del_unused_quot(char *s)
 	return (tmp);
 }
 
-char	*expand_special()
+t_env	*handler(int opt, char **env, char *name, char *val)
+{
+	t_env			*tmp;
+	static t_env	*myenv;
+	static int		exit_status;
 
-char	*expand_extra()
+	tmp = NULL;
+	if (name && !ft_strcmp(name, "?"))
+	{
+		exit_status = opt;
+		free(name);
+		return (NULL);
+	}
+	if (val && !ft_strcmp(val, "?"))
+		return (init_env(NULL, NULL, ft_itoa(exit_status)));
+	if (opt == 0 && env)
+		myenv = init_handler(env, &exit_status);
+	// else if (opt == 1)
 
-char	*replace_str()
+	// else if (opt == 2)
+
+	else if (opt == 3)
+		res = mod_env(&myenv, name, val, opt);
+
+	// else if (opt == 4)
+	return (tmp);
+}
+
+char	*expand_special(char *tmp, char *util, int *j)
+{
+	t_env	*var;
+
+	if (tmp[*j] == '$')
+		util = ft_itoa(getpid());
+	else if (tmp[*j] == '?')
+	{
+		var = handler(-1, NULL, NULL, "?");
+		if (!var)
+			return (NULL);
+		util = ft_strdup(var->content);
+		// free_env(var);
+	}
+	else
+		util = ft_strdup("Minishell");
+	(*j)++;
+	return (util);
+}
+
+char	*expand_extra(char *tmp, char *util, int *j, int i)
+{
+	t_env	*var;
+
+	while (ft_isalnum(res[*j]) || res[*j] == '_')
+		(*j)++;
+	util = ft_strndup(&res[i + 1], (*j - i + 1));
+	if (util)
+	{
+		var = handler(3, NULL, util, NULL);
+		free(util);
+		if (var)
+			return (util = ft_strdup(var->content));
+	}
+	return (NULL);
+}
+
+char	*replace_str(char *tmp, char *util, int j, int i)
+{
+	char	*tmp;
+	int		k;
+	int		l;
+	int		m;
+
+	tmp = ft_newstr(ft_strlen(str) - (i - j) + ft_strlen(new));
+	if (!tmp)
+	{
+		if (new)
+			free(new);
+		free(str);
+		return (NULL);
+	}
+	k = 0;
+	l = 0;
+	while (str && str[l] && l < j)
+		tmp[k++] = str[l++];
+	m = 0;
+	while (new && new[m])
+		tmp[k++] = new [m++];
+	l += i - j;
+	ft_strcat(&tmp[k], &str[l]);
+	if (str)
+		free(str);
+	return (tmp);
+}
 
 char	*expend_words(char *s, int i)
 {
@@ -319,7 +407,7 @@ void    loop(void)
 		s = readline("\e[1m\e[31m\002""Minishell : ""\001\e[0m\002");
 		if (s == NULL)
 			return ;
-		// add_history(s); //??
+		add_history(s);
 		split_words(s, 0, 0);
 		free(s);
 	}
