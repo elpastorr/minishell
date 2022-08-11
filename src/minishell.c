@@ -28,12 +28,20 @@ void    loop(void)
 	}
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(int ac, char **av, char **env)
 {
-	(void)argc;
-	(void)argv;
-	(void)env_handle(env, 0, NULL, NULL);
-	printf("%s\n", env_handle(NULL, 5, "TEST", NULL));
-	(void)env_handle(NULL, -1, NULL, NULL);
-	return (0);
+	t_env	*myenv;
+	
+	(void)ac;
+	(void)av;
+	if (!env || !env[0])
+	{
+		printf("env NULL exit\n");
+		return (1);
+	}
+	handler(0, env, NULL, NULL);
+	myenv = handler(3, NULL, "SHLVL", NULL);
+	(void)myenv;
+	loop();
+	return (1);
 }

@@ -17,14 +17,14 @@ char	*get_name(char *env)
 	int	i;
 
 	i = 0;
-	if (tmp)
+	if (env)
 	{
-		while (tmp[i] && tmp[i] != '=')
+		while (env[i] && env[i] != '=')
 			i++;
 	}
-	if (!tmp || !tmp[i])
+	if (!env || !env[i])
 		return (NULL);
-	return (ft_strndup(tmp, i));
+	return (ft_strndup(env, i));
 }
 
 char	*get_content(char *env)

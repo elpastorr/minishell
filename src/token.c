@@ -26,7 +26,7 @@ t_token	*new_token(t_token *next, char *str, int type)
 	return (tmp);
 }
 
-int	token_syntax(t_token *token)
+t_token	*token_syntax(t_token *token)
 {
 	t_token	*tmp;
 	int		ret;
@@ -63,7 +63,7 @@ void	tokenize(t_token *token)
 	f_out = 0;
 	while (tmp)
 	{
-		get_type(tmp, f_in, f_out);
+		get_type(tmp, &f_in, &f_out);
 		if (tmp->type == rdout || tmp->type == rout || tmp->type == rin)
 			f_in = 1;
 		if (tmp->type == rdin)
@@ -72,7 +72,7 @@ void	tokenize(t_token *token)
 	}
 	if (!token_syntax(token))
 		return ;
-	tokenizer(token);
+	tokenizing(token);
 }
 
 void	tokenizing(t_token *token)

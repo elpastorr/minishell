@@ -61,7 +61,31 @@ void	get_word_index(char *s, int *i, int *start)
 	}
 }
 
-t_env	*handler(int opt, char **env, char *name, char *val)
+t_env	*mod_env(t_env **env, char *name, char *content)
+{
+	t_env	*tmp;
+
+	tmp = *env;
+	while (tmp)
+	{
+		if (!ft_strcmp(name, tmp->name))
+		{
+			if (content)
+			{
+				free(tmp->content);
+				tmp->content = ft_strdup(content);
+			}
+			return (tmp);
+		}
+		if (!tmp->next)
+			if (name && content)
+				return (tmp->next = init_env(NULL, ft_strdup(name), ft_strdup(content)));
+		tmp = tmp->next;
+	}
+	return (tmp);
+}
+
+t_env	*handler(int opt, char **env, char *name, char *content)
 {
 	t_env			*tmp;
 	static t_env	*myenv;
@@ -74,14 +98,14 @@ t_env	*handler(int opt, char **env, char *name, char *val)
 		free(name);
 		return (NULL);
 	}
-	if (val && !ft_strcmp(val, "?"))
+	if (content && !ft_strcmp(content, "?"))
 		return (init_env(NULL, NULL, ft_itoa(exit_status)));
 	if (opt == 0 && env)
 		myenv = init_handler(env, &exit_status);
 	// else if (opt == 1)
 	// else if (opt == 2)
 	else if (opt == 3)
-		tmp = mod_env(&myenv, name, val, opt);
+		tmp = mod_env(&myenv, name, content);
 	// else if (opt == 4)
 	return (tmp);
 }

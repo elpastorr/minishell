@@ -88,7 +88,7 @@ void	get_word_index(char *s, int *i, int *start);
 t_env	*handler(int opt, char **env, char *name, char *val);
 
 t_token	*new_token(t_token *next, char *str, int type);
-int		token_syntax(t_token *token);
+t_token	*token_syntax(t_token *token);
 void	tokenize(t_token *token);
 void	tokenizing(t_token *token);
 
