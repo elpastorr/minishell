@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:05:46 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/10 17:07:44 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/15 14:05:29 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	del_unquot_extra(char *s, int *i, int *j, char quot)
 			s[*j] = s[*j + 1];
 			(*j)++;
 		}
-		len == --(*i) - 1;
+		len = --(*i) - 1;
 		while (s[*i])
 		{
 			s[*i] = s[*i + 1];

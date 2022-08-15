@@ -1,4 +1,6 @@
-SRCS =	src/minishell.c src/expand.c src/init.c src/parse.c src/quote.c src/token.c src/get.c
+SRCS =	src/minishell.c src/expand.c src/init.c src/parse.c \
+		src/quote.c src/token.c src/get.c src/free.c src/handler.c \
+		src/cmd.c
 
 OBJS =	${SRCS:.c=.o}
 

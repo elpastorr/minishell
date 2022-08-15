@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:07:52 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/10 19:16:09 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/15 16:47:43 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,24 +25,38 @@ t_env	*init_env(t_env *next, char *name, char *content)
 	return (env);
 }
 
-static t_env	*init_handler(char **env, int *exit_status)
+t_cmd	*init_cmd(t_cmd *next, t_token *arg, t_token *redir)
 {
-	int		i;
-	t_env	*myenv;
-	t_env	*tmp;
+	t_cmd	*data;
 
-	*exit_status = 0;
-	myenv = init_env(NULL, get_name(env[0]), get_content(env[0]));
-	// if (!myenv)
-		// exitfree()
-	i = 0;
-	tmp = myenv;
-	while (env[++i])
+	data = malloc(sizeof(t_cmd));
+	if (!data)
+		return (NULL);
+	data->arg = arg;
+	data->redir = redir;
+	data->next = next;
+	data->fdin = 0;
+	data->fdout = 1;
+	data->pid = 0;
+	data->exit = 0;
+	return (data);
+}
+
+t_cmd	*cmd_init(t_cmd *res, t_token **tmp, t_token *token)
+{
+	t_token	*temp;
+	t_cmd	*data;
+
+	data = init_cmd(NULL, NULL, NULL);
+	if (!data)
 	{
-		tmp->next = init_env(NULL, get_name(env[i]), get_content(env[i]));
-		// if (!tmp->next)
-			// exitfree();
-		tmp = tmp->next;
+		free_token(token);
+		ctfree(res, "init token failed", 'c', 1);
+		return (NULL);
 	}
-	return (myenv);
+	temp = *tmp;
+	*tmp = (*tmp)->next;
+	temp->next = NULL;
+	free_token(temp);
+	return (data);
 }

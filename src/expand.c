@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:14:53 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/10 18:10:37 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/15 16:15:42 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*expand_special(char *tmp, char *util, int *j)
 		if (!var)
 			return (NULL);
 		util = ft_strdup(var->content);
-		// free_env(var);
+		free_env(var);
 	}
 	else
 		util = ft_strdup("Minishell");

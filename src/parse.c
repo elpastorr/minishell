@@ -6,39 +6,11 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/10 19:03:29 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/15 17:31:30 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	split_words(char *s, int i, int start)
-{
-	t_token	*token;
-	t_token	*tmp;
-
-	if (!s)
-		return ;
-	if (!s[0])
-		return (free(s));
-	get_word_index(s, &i, &start);
-	token = new_token(NULL, strndup(&s[start], i - start), 0);
-	tmp = token;
-	while (s[i])
-	{
-		get_word_index(s, &i, &start);
-		if (i > start)
-		{
-			token = new_token(NULL, strndup(&s[start], i - start), 0);
-			token = token->next;
-			// if (!token)
-				// exitfree();
-		}
-	}
-	ft_memdel((void **)&s);
-	tokenize(tmp);
-}
-
 
 void	get_word_index(char *s, int *i, int *start)
 {
@@ -61,51 +33,107 @@ void	get_word_index(char *s, int *i, int *start)
 	}
 }
 
-t_env	*mod_env(t_env **env, char *name, char *content)
+void	split_words(char *s, int i, int start)
 {
-	t_env	*tmp;
+	t_token	*token;
+	t_token	*tmp;
 
-	tmp = *env;
-	while (tmp)
+	if (!s)
+		return ;
+	if (!s[0])
+		return (free(s));
+	get_word_index(s, &i, &start);
+	token = new_token(NULL, strndup(&s[start], i - start), 0);
+	tmp = token;
+	while (s[i])
 	{
-		if (!ft_strcmp(name, tmp->name))
+		get_word_index(s, &i, &start);
+		if (i > start)
 		{
-			if (content)
-			{
-				free(tmp->content);
-				tmp->content = ft_strdup(content);
-			}
-			return (tmp);
+			token->next = new_token(NULL, strndup(&s[start], i - start), 0);
+			token = token->next;
+			if (!token)
+				ctfree(tmp, "error init token...", 't', 1);
 		}
-		if (!tmp->next)
-			if (name && content)
-				return (tmp->next = init_env(NULL, ft_strdup(name), ft_strdup(content)));
-		tmp = tmp->next;
 	}
-	return (tmp);
+	ft_memdel((void **)&s);
+	tokenize(tmp);
 }
 
-t_env	*handler(int opt, char **env, char *name, char *content)
+void	tokenize(t_token *token)
 {
-	t_env			*tmp;
-	static t_env	*myenv;
-	static int		exit_status;
+	t_token	*tmp;
+	int		f_in;
+	int		f_out;
 
-	tmp = NULL;
-	if (name && !ft_strcmp(name, "?"))
+	tmp = token;
+	f_in = 0;
+	f_out = 0;
+	while (tmp)
 	{
-		exit_status = opt;
-		free(name);
-		return (NULL);
+		get_type(tmp, &f_in, &f_out);
+		if (tmp->type == rdout || tmp->type == rout || tmp->type == rin)
+			f_in = 1;
+		if (tmp->type == rdin)
+			f_out = 1;
+		tmp = tmp->next;
 	}
-	if (content && !ft_strcmp(content, "?"))
-		return (init_env(NULL, NULL, ft_itoa(exit_status)));
-	if (opt == 0 && env)
-		myenv = init_handler(env, &exit_status);
-	// else if (opt == 1)
-	// else if (opt == 2)
-	else if (opt == 3)
-		tmp = mod_env(&myenv, name, content);
-	// else if (opt == 4)
-	return (tmp);
+	if (!token_syntax(token))
+		return ;
+	tokenizing(token);
+}
+
+void	tokenizing(t_token *token)
+{
+	t_token	*tmp;
+	int		i;
+
+	tmp = token;
+	while (tmp)
+	{
+		if (tmp->type == word || tmp->type == fout)
+		{
+			i = 0;
+			while (tmp->str && tmp->str[i])
+			{
+				if (tmp->str[i] == '$' && quot_status(tmp->str, i) != 1 && (ft_isalnum(tmp->str[i + 1]) || tmp->str[i + 1] == '_' || tmp->str[i + 1] == '?' || tmp->str[i + 1] == '$'))
+					tmp->str = expend_words(tmp->str, i);
+				else
+					tmp->str = del_unused_quot(tmp->str);
+				i++;
+			}
+		}
+		tmp = tmp->next;
+	}
+	// print_token(token);
+	create_cmd(token);
+}
+
+void	create_cmd(t_token *token)
+{
+	t_cmd	*data;
+	t_cmd	*temp;
+	t_token	*tmp;
+
+	if (!token)
+		return ;
+	data = init_cmd(NULL, NULL, NULL);
+	if (!data)
+		exit_free(token, "Error cmd init...", 't', 1);
+	temp = data;
+	tmp = token;
+	while (tmp)
+	{
+		if (tmp->type == pip)
+		{
+			data->next = cmd_init(temp, &tmp, token);
+			data = data->next;
+		}
+		else
+			add_cmd(&tmp, data);
+	}
+	if (!temp || !pars_err(temp))
+		return ;
+	print_cmd(temp);
+	// parent(temp);
 }

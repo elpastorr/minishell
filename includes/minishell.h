@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/08/10 19:36:20 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/15 17:37:07 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,23 +74,20 @@ typedef struct s_env
 	struct s_env	*next;
 }	t_env;
 
-char	*env_handle(char **envd, int opt, char *str, char *cont);
-char	*get_var(t_env *env, char *str);
-t_env	*unset_var(t_env *env, char *str);
-void	export_var(t_env *env, char *str, char *cont);
-void	set_sig(void);
-
 
 void	loop(void);
 
-void	split_words(char *s, int i, int start);
 void	get_word_index(char *s, int *i, int *start);
-t_env	*handler(int opt, char **env, char *name, char *val);
-
-t_token	*new_token(t_token *next, char *str, int type);
-t_token	*token_syntax(t_token *token);
+void	split_words(char *s, int i, int start);
 void	tokenize(t_token *token);
 void	tokenizing(t_token *token);
+void	create_cmd(t_token *token);
+
+t_env	*handler(int opt, char **env, char *name, char *val);
+
+void	print_token(t_token *token);
+t_token	*new_token(t_token *next, char *str, int type);
+t_token	*token_syntax(t_token *token);
 
 int		quot_status(char *s, int i);
 void	skip_quot(char *s, int *i);
@@ -99,7 +96,8 @@ void	del_unquot_extra(char *s, int *i, int *j, char quot);
 void	get_type(t_token *tmp, int *f_in, int *f_out);
 
 t_env	*init_env(t_env *next, char *name, char *content);
-static t_env	*init_handler(char **env, int *exit_status);
+t_cmd	*init_cmd(t_cmd *next, t_token *arg, t_token *redir);
+t_cmd	*cmd_init(t_cmd *res, t_token **tmp, t_token *token);
 
 char	*get_name(char *env);
 char	*get_content(char *env);
@@ -109,5 +107,16 @@ char	*expand_extra(char *tmp, char *util, int *j, int i);
 char	*expend_words(char *s, int i);
 char	*replace_str(char *tmp, char *util, int j, int i);
 
+void	print_cmd(t_cmd *cmd);
+t_token	*cmd_redir(t_token **tmp);
+t_token	*cmd_arg(t_token **tmp);
+void	add_cmd(t_token **tmp, t_cmd *data);
+t_cmd	*pars_err(t_cmd *cmd);
+
+void	free_token(t_token *token);
+void	free_cmd(t_cmd *cmd);
+void	free_env(t_env *env);
+void	ctfree(void *ptr, char *err, char type, int n);
+void	exit_free(void *ptr, char *err, char type, int n);
 
 #endif

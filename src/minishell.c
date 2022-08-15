@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:48:46 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/08/10 17:02:22 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/15 16:33:16 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,17 +21,17 @@ void    loop(void)
 	{
 		s = readline("\e[1m\e[31m\002""Minishell : ""\001\e[0m\002");
 		if (s == NULL)
-			return ;
+			exit_free(NULL, "exit", 0, 1);
 		add_history(s);
 		split_words(s, 0, 0);
-		free(s);
 	}
 }
 
 int	main(int ac, char **av, char **env)
 {
 	t_env	*myenv;
-	
+	char	*s;
+
 	(void)ac;
 	(void)av;
 	if (!env || !env[0])
@@ -41,7 +41,11 @@ int	main(int ac, char **av, char **env)
 	}
 	handler(0, env, NULL, NULL);
 	myenv = handler(3, NULL, "SHLVL", NULL);
-	(void)myenv;
+	if (!myenv)
+		myenv = handler(3, NULL, "SHLVL", "1");
+	s = ft_itoa(ft_atoi(myenv->content) + 1);
+	handler(3, NULL, "SHLVL", s);
+	free(s);
 	loop();
 	return (1);
 }
