@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/08/15 17:37:07 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/30 20:50:26 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef enum s_type
 {
 	word,	0 : "tout le reste"
 	fout,	1 : >> "this"
-	fin,	2 : "this" <<
+	fin,	2 : << "this"
 	pip,	3 : |
 	rin,	4 : <
 	rdin,	5 : <<
