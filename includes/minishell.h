@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/08/15 17:37:07 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/30 17:49:23 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ typedef enum s_type
 {
 	word,	0 : "tout le reste"
 	fout,	1 : >> "this"
-	fin,	2 : "this" <<
+	fin,	2 : << "this"
 	pip,	3 : |
 	rin,	4 : <
 	rdin,	5 : <<
@@ -89,6 +89,18 @@ void	print_token(t_token *token);
 t_token	*new_token(t_token *next, char *str, int type);
 t_token	*token_syntax(t_token *token);
 
+int		is_built(t_cmd *cmd);
+
+int		is_heredoc(t_cmd *cmd);
+char	*heredoc_strcat(char *tmp, char *s);
+char	*read_heredoc(char *s, char *tmp);
+char	*heredoc_extra(t_token *redir, char *tmp, int ret);
+char	*heredoc(t_cmd *cmd);
+
+void	child_extra(t_cmd *cmd, t_cmd *tmp, int *pipefd, char *h_doc);
+void	child(t_cmd *cmd, t_cmd *tmp, int *pipefd, int i);
+void	parent(t_cmd *cmd);
+
 int		quot_status(char *s, int i);
 void	skip_quot(char *s, int *i);
 char	*del_unused_quot(char *s);
@@ -101,6 +113,7 @@ t_cmd	*cmd_init(t_cmd *res, t_token **tmp, t_token *token);
 
 char	*get_name(char *env);
 char	*get_content(char *env);
+int		get_nbpipe(t_cmd *cmd);
 
 char	*expand_special(char *tmp, char *util, int *j);
 char	*expand_extra(char *tmp, char *util, int *j, int i);
