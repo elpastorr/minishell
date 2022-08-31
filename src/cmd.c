@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 16:42:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/15 17:37:24 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/31 17:12:47 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,7 @@ void	add_cmd(t_token **tmp, t_cmd *data)
 	}
 	else if ((*tmp)->type == word && !data->arg)
 		data->arg = cmd_arg(tmp);
-	else if ((*tmp)->type == word && !data->arg)
+	else if ((*tmp)->type == word && data->arg)
 	{
 		temp = data->arg;
 		while (temp->next)
