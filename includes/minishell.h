@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/08/30 20:50:26 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/01 22:16:06 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 typedef enum s_type
 {
@@ -113,10 +115,26 @@ t_token	*cmd_arg(t_token **tmp);
 void	add_cmd(t_token **tmp, t_cmd *data);
 t_cmd	*pars_err(t_cmd *cmd);
 
+/*FREE*/
 void	free_token(t_token *token);
 void	free_cmd(t_cmd *cmd);
 void	free_env(t_env *env);
 void	ctfree(void *ptr, char *err, char type, int n);
 void	exit_free(void *ptr, char *err, char type, int n);
+
+/*FREE_UTILS*/
+void	*free_tabtab(char **tab);
+
+/*EXEC*/
+void    *parent(t_cmd *cmd);
+
+
+
+/*UTILS*/
+char	*ft_strjoin_m(char *base, char *read);
+char	*join(char *base, char *read);
+
+/*TEST PRINTS*/
+void	print_tabtab(char **tab);
 
 #endif

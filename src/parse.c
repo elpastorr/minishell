@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/30 21:52:30 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/08/31 17:00:08 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,5 +136,5 @@ void	create_cmd(t_token *token)
 	if (!temp || !pars_err(temp))
 		return ;
 	print_cmd(temp);
-	// parent(temp);
+	parent(temp);
 }
