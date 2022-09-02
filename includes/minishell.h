@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/01 22:16:06 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/02 23:02:18 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,11 +124,25 @@ void	exit_free(void *ptr, char *err, char type, int n);
 
 /*FREE_UTILS*/
 void	*free_tabtab(char **tab);
+void	free_tabs_exit_free(t_cmd *cmd, char **env, char **argv, char *err);
 
 /*EXEC*/
 void    *parent(t_cmd *cmd);
+void	child(t_cmd *cmd, int *fd);
+
+char	**create_env_tab(t_env *env, int nb_of_lines);
+char	**get_exec_env(void);
+char	**get_exec_args(t_cmd *cmd, int nb_of_arg);
+int		find_slash(t_cmd *cmd);
+
+void	exec(t_cmd *cmd, const char *pathname);
+void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
 
 
+
+/*PATHS*/
+char	*find_path(t_cmd *cmd, char **tab_of_paths);
+char	*look_for_path(t_cmd *cmd);
 
 /*UTILS*/
 char	*ft_strjoin_m(char *base, char *read);

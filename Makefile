@@ -12,7 +12,7 @@ HEADER = includes/
 
 #DEPS =	${SRCS:.o=.d}
 
-FLAGS =	-I $(HEADER) -Wall -Wextra -Werror
+FLAGS =	-I $(HEADER) -Wall -Wextra -Werror -g3 -fsanitize=address
 
 NAME =	minishell
 

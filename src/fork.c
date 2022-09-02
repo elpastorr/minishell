@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/01 23:20:03 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/02 23:05:14 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,11 +31,6 @@ int find_nb_of_pipes(t_cmd *cmd)
     return (i);
 }
 
-/*int **create_fd_tab(int *fd)
-{
-    
-}*/
-
 int is_built(t_cmd *cmd)
 {
 	if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "pwd")) //strcmp
@@ -53,9 +48,55 @@ int is_built(t_cmd *cmd)
 	return (0);
 }
 
-char	*look_for_path(t_cmd *cmd) //si ya deja un slash faut checker si ca existe deja et si cest le cas il faut execve
+int		is_exe(t_cmd *cmd)
+{
+	char	*path;
+	
+	if (is_built(cmd))
+		return (1);
+	else if (!is_built(cmd) && !find_slash(cmd))
+	{
+		path = look_for_path(cmd);
+		if (look_for_path(cmd))
+		{
+			free(path);
+			return (2);
+		}
+	}
+	else if (!is_built(cmd) && find_slash(cmd))
+	{
+		if (access(cmd->arg->str, X_OK) == 0)
+			return (3);
+	}
+	return (0);
+}
+
+char	*find_path(t_cmd *cmd, char **tab_of_paths)
 {
 	int		i;
+	char	*tmp;
+	char	*cmd_path;
+	
+	i = 0;
+	tmp = join("/", cmd->arg->str);
+		if (!tmp)
+			return (NULL);
+	while (tab_of_paths[i])
+	{
+		cmd_path = join(tab_of_paths[i], tmp);
+		if(!cmd_path)
+			return (free(tmp), NULL);
+		if (access(cmd_path, X_OK) == 0) //pour verifier si cest bien un executable
+			return (free(tmp), cmd_path);
+		free(cmd_path);
+		cmd_path = NULL;
+		i++;
+	} 
+	return (free(tmp), NULL);
+}
+
+char	*look_for_path(t_cmd *cmd)
+{
 	t_env	*whole_path;
     char	**tab_of_paths;
 	char	*cmd_path;
@@ -64,22 +105,12 @@ char	*look_for_path(t_cmd *cmd) //si ya deja un slash faut checker si ca existe 
 	printf("ligne entiere de chemins = [%s]\n", whole_path->content);
 	tab_of_paths = ft_split(whole_path->content, ':');
 	if (!tab_of_paths)
-		return (ctfree(cmd, "ERREUR MALLOC EXEC PATH", 'c', -1), NULL); //on verra free cmd et reaffcher une nouvelle ligne, return NULL
-	//ctfree(cmd, "ERREUR A", 'c', -1),
-	i = 0;
-	while (tab_of_paths[i])
-	{
-		cmd_path = join(tab_of_paths[i], join("/", cmd->arg->str));
-		if(!cmd_path)
-			return (free_tabtab(tab_of_paths), NULL);
-		if (access(cmd_path, X_OK) == 0) // pour verifier si c'est bien un executable
-		{
-			printf("command path = [%s]\n", cmd_path);
-			return (cmd_path);
-		}
-		i++;
-	}    
-    return (NULL);
+		return (ctfree(cmd, "ERREUR MALLOC EXEC PATH", 'c', -1), NULL);
+	cmd_path = find_path(cmd, tab_of_paths);
+	if (!cmd_path)
+		return(free_tabtab(tab_of_paths));
+	free_tabtab(tab_of_paths);
+    return (cmd_path);
 }
 
 
@@ -155,10 +186,67 @@ char	**get_exec_args(t_cmd *cmd, int nb_of_arg)
 	return (argv);	
 }
 
-void	*exec(t_cmd *cmd, const char *pathname)
+int	find_slash(t_cmd *cmd)
+{
+	t_token	*tmp;
+	int		i;
+
+	tmp = cmd->arg;
+	i = 0;
+	if (!tmp)
+		return (0);
+	while (tmp->str[i])
+	{
+		if (tmp->str[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env)
+{
+	char	**argv;
+	
+	if (nb_of_arg == 0)
+	{
+		free_tabtab(env);
+		exit_free(cmd, "\nNO ARGS\n", 'c', 4);
+	}
+	else if (nb_of_arg == 1)
+	{
+		argv = malloc(sizeof(char *) * 2);
+		if (!argv)
+			free_tabs_exit_free(cmd, env, NULL, "\nMALLOC ERROR ARGV\n");
+		argv[0] = strdup(cmd->arg->str);
+		if (!argv[0])
+			free_tabs_exit_free(cmd, env, argv, "\nMALLOC ERROR ARGV\n");
+		argv[1] = NULL;
+		if (!strcmp(pathname, argv[0]))
+			pathname = argv[0];
+		ctfree(cmd, NULL, 'c', 4); //on free les donnes malloc dans l'enfant (env et cmd)
+		if (execve(pathname, argv, env) == -1) //execve free automatiquement char**env et arg
+			exit(4);
+	}
+	else if (nb_of_arg > 1)
+	{
+		argv = get_exec_args(cmd, nb_of_arg);
+		if (!argv)
+			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE\n");
+		printf("%s - %s - %p\n", argv[0], argv[1], argv[2]);
+		if (!strcmp(pathname, argv[0]))
+			pathname = argv[0];
+		ctfree(cmd, NULL, 'c', 4);
+		if (execve(pathname, argv, env) == -1)
+			exit(4);
+	}
+	else
+		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE\n");
+}
+
+void	exec(t_cmd *cmd, const char *pathname)
 {
 	int		nb_of_arg;
-	char	**argv;
 	char	**env;
 	t_token	*tmp;
 
@@ -171,84 +259,79 @@ void	*exec(t_cmd *cmd, const char *pathname)
 	}
 	env = get_exec_env();
 	if (!env)
-		return (NULL);
-	if (nb_of_arg == 0)
-		return (free_tabtab(env), NULL);
-	if (nb_of_arg == 1)
-	{
-		argv = malloc(sizeof(char *));
-		argv[0] = strdup(cmd->arg->str);
-		argv[1] = NULL;
-		ctfree(cmd, NULL, 'c', 4);
-		execve(pathname, argv, env);
-	}
-		
-	else
-	{
-		argv = get_exec_args(cmd, nb_of_arg);
-		print_tabtab(argv);
-		if (!argv)
-			return (free_tabtab(env), NULL);
-		printf("%s - %s - %p\n", argv[0], argv[1], argv[2]);
-		ctfree(cmd, NULL, 'c', 4);
-		execve(pathname, argv, env);
-	}
-	return (NULL);
+		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
+	if (!cmd->redir)
+		exec_cmd_without_redir(cmd, pathname, nb_of_arg, env);
+	
 }
 
 
-void	*child(t_cmd *cmd, int pid, int *fd) //besoin de malloc les fd pour ca
+void	child(t_cmd *cmd, int *fd) //besoin de malloc les fd pour ca
 {
 	char	*path;
 
-	if (pid == 0) // on est dans l'enfant 
+	if (cmd->pid == 0) // on est dans l'enfant 
 	{
-		close(fd[0]);
-		//dup2(fd[1], 1); //on remplace lentree standard par ca
+		if (fd)
+			close(fd[0]);
         if (is_built(cmd))
             printf("C'est un built-in perso\n");
-        else
+        else if (!is_built(cmd) && !find_slash(cmd))
         {
             path = look_for_path(cmd);
             if (!path)
-                return (NULL);
+                exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
 			exec(cmd, path);
         }
+		else if (!is_built(cmd) && find_slash(cmd))
+		{
+			if (access(cmd->arg->str, X_OK) == -1) {
+				printf("MAUVAIS EXECUTABLE\n");
+				exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
+			}
+			exec(cmd, cmd->arg->str);
+		}
+		else
+			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
     }
-    else
-    {
-        close(fd[1]);
-		wait(NULL);
-    }
-	return (NULL);
 }
+
+
 
 void	*parent(t_cmd *cmd)
 {
     int fd[2];  //fd[nb_of_forks][2]
-    int pid1;
     int nb_of_pipes;
     
+	if (!is_exe(cmd))
+		return (ctfree(cmd, NULL, 'c', 4), NULL);
     nb_of_pipes = find_nb_of_pipes(cmd);
     if (nb_of_pipes) //si ya des pipes
     {
         //fd = malloc(sizeof(int) * (nb_of_pipes * 2));
         if (pipe(fd) == -1)
             return (NULL);
-        pid1 = fork();
-        if (pid1 == -1)
+        cmd->pid = fork();
+        if (cmd->pid == -1)
             return (NULL);
-        child(cmd, pid1, fd);
+		else if (cmd->pid == 0)
+        	child(cmd, fd);
+		else if (cmd->pid > 0) // ligne qui peut etre supp
+			wait(NULL);
     }
-    else //ya quand meme une commande donc il faut fork
+    else
     {
         printf("Il n'y a pas de pipes\n");
-        if (pipe(fd) == -1)
+		cmd->pid = fork();
+		if (cmd->pid == -1)
 			return (NULL);
-		pid1 = fork();
-		if (pid1 == -1)
-			return (NULL);
-		child(cmd, pid1, fd);
+		if (cmd->pid == 0)
+		{
+			printf("child pid = [%d]\n", cmd->pid);
+			child(cmd, NULL);
+		}
+		else { printf("parent pid = [%d]\n", cmd->pid);
+			wait(NULL);}
     }
-    return (NULL);
+    return (ctfree(cmd, NULL, 'c', 4), NULL);
 }

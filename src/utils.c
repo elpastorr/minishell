@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 17:23:56 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/01 19:33:39 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/02 18:12:24 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	*ft_strjoin_m(char *base, char *read)
 	j = 0;
 	if (!base || !read)
 		return (NULL);
-	line = malloc(sizeof(char) * (ft_strlen(base) + ft_strlen(read) + 2));
+	line = malloc(sizeof(char) * (ft_strlen(base) + ft_strlen(read) + 1));
 	if (!line)
 		return (NULL);
 	while (base[i])

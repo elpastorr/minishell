@@ -45,3 +45,7 @@ ok                    --> "" -> remplace par la valeur
 
 echo '$HUI'
 $HUI                  --> '' -> recrit la variable
+
+BUILT-INS
+
+/!\ echo -nnnnnnnnnnnnnnnnnnnnnn marche pareil que echo -n
