@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/02 23:05:14 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/04 17:32:01 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int		is_exe(t_cmd *cmd)
 	else if (!is_built(cmd) && !find_slash(cmd))
 	{
 		path = look_for_path(cmd);
-		if (look_for_path(cmd))
+		if (path)
 		{
 			free(path);
 			return (2);
@@ -213,27 +213,12 @@ void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, cha
 		free_tabtab(env);
 		exit_free(cmd, "\nNO ARGS\n", 'c', 4);
 	}
-	else if (nb_of_arg == 1)
-	{
-		argv = malloc(sizeof(char *) * 2);
-		if (!argv)
-			free_tabs_exit_free(cmd, env, NULL, "\nMALLOC ERROR ARGV\n");
-		argv[0] = strdup(cmd->arg->str);
-		if (!argv[0])
-			free_tabs_exit_free(cmd, env, argv, "\nMALLOC ERROR ARGV\n");
-		argv[1] = NULL;
-		if (!strcmp(pathname, argv[0]))
-			pathname = argv[0];
-		ctfree(cmd, NULL, 'c', 4); //on free les donnes malloc dans l'enfant (env et cmd)
-		if (execve(pathname, argv, env) == -1) //execve free automatiquement char**env et arg
-			exit(4);
-	}
-	else if (nb_of_arg > 1)
+	else if (nb_of_arg >= 1)
 	{
 		argv = get_exec_args(cmd, nb_of_arg);
 		if (!argv)
 			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE\n");
-		printf("%s - %s - %p\n", argv[0], argv[1], argv[2]);
+		//printf("%s - %s - %p\n", argv[0], argv[1], argv[2]);
 		if (!strcmp(pathname, argv[0]))
 			pathname = argv[0];
 		ctfree(cmd, NULL, 'c', 4);
@@ -262,7 +247,6 @@ void	exec(t_cmd *cmd, const char *pathname)
 		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
 	if (!cmd->redir)
 		exec_cmd_without_redir(cmd, pathname, nb_of_arg, env);
-	
 }
 
 

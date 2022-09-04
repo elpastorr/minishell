@@ -5,6 +5,7 @@ SRCS =	src/minishell.c src/expand.c src/init.c src/parse.c \
 		src/utils.c \
 		src/free_utils.c \
 		src/print_test.c \
+		src/signals.c \
 
 OBJS =	${SRCS:.c=.o}
 

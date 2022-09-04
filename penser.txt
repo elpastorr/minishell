@@ -49,3 +49,12 @@ $HUI                  --> '' -> recrit la variable
 BUILT-INS
 
 /!\ echo -nnnnnnnnnnnnnnnnnnnnnn marche pareil que echo -n
+
+
+si on fait plusieurs << >> < >
+
+SI YA DES ARGS:
+    la commande prend les arg en entree 
+SI YA PAS D'ARGS:
+    la commande prend en entree un truc qui est genre "< file" (si celui-ci existe)
+    
