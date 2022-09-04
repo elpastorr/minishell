@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/04 17:32:01 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/04 21:09:28 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -229,35 +229,43 @@ void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, cha
 		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE\n");
 }
 
-void	exec(t_cmd *cmd, const char *pathname)
+int	find_nb_of_args(t_cmd *cmd)
 {
-	int		nb_of_arg;
-	char	**env;
 	t_token	*tmp;
+	int		nb_of_args;
 
 	tmp = cmd->arg;
-	nb_of_arg = 0;
+	nb_of_args = 0;
 	while (tmp)
 	{
 		tmp = tmp->next;
-		nb_of_arg++;
+		nb_of_args++;
 	}
+	return (nb_of_args);
+}
+
+void	exec(t_cmd *cmd, const char *pathname)
+{
+	int		nb_of_args;
+	char	**env;
+
+	nb_of_args = find_nb_of_args(cmd);
 	env = get_exec_env();
 	if (!env)
 		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
 	if (!cmd->redir)
-		exec_cmd_without_redir(cmd, pathname, nb_of_arg, env);
+		exec_cmd_without_redir(cmd, pathname, nb_of_args, env);
 }
 
 
-void	child(t_cmd *cmd, int *fd) //besoin de malloc les fd pour ca
+void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 {
 	char	*path;
 
 	if (cmd->pid == 0) // on est dans l'enfant 
 	{
-		if (fd)
-			close(fd[0]);
+		/*if (fd)
+			close(fd[0]);*/
         if (is_built(cmd))
             printf("C'est un built-in perso\n");
         else if (!is_built(cmd) && !find_slash(cmd))
@@ -280,39 +288,57 @@ void	child(t_cmd *cmd, int *fd) //besoin de malloc les fd pour ca
     }
 }
 
+/*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)
+{
+	t_cmd	*tmp;
+	int		i;
+	int		fd[nb_of_pipes][2];
 
+	tmp = cmd;
+	i = 0;
+	while (i < nb_of_pipes)
+	{	
+		if (pipe(fd[i]) < 0)
+    	    return (NULL);
+		i++;
+	}
+    cmd->pid = fork();
+    if (cmd->pid < 0) //Erreur
+        return (NULL);
+	else if (cmd->pid == 0) //ENFANT
+	{
+		while (tmp)
+		{
+			if (is_exe(cmd))
+			{
+				dup2()
+			}
+		}
+	}
+    	child(cmd, fd);
+	else if (cmd->pid > 0) // ligne qui peut etre supp
+		waitpid(0, 0 ,0);
+}*/
 
 void	*parent(t_cmd *cmd)
 {
-    int fd[2];  //fd[nb_of_forks][2]
     int nb_of_pipes;
     
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
     nb_of_pipes = find_nb_of_pipes(cmd);
     if (nb_of_pipes) //si ya des pipes
-    {
-        //fd = malloc(sizeof(int) * (nb_of_pipes * 2));
-        if (pipe(fd) == -1)
-            return (NULL);
-        cmd->pid = fork();
-        if (cmd->pid == -1)
-            return (NULL);
-		else if (cmd->pid == 0)
-        	child(cmd, fd);
-		else if (cmd->pid > 0) // ligne qui peut etre supp
-			wait(NULL);
-    }
+		printf("Il y a plusieurs pipes\n"); //determine_exe_type(cmd, nb_of_pipes);
     else
     {
         printf("Il n'y a pas de pipes\n");
 		cmd->pid = fork();
-		if (cmd->pid == -1)
+		if (cmd->pid < 0)
 			return (NULL);
 		if (cmd->pid == 0)
 		{
 			printf("child pid = [%d]\n", cmd->pid);
-			child(cmd, NULL);
+			determine_exe_type(cmd);
 		}
 		else { printf("parent pid = [%d]\n", cmd->pid);
 			wait(NULL);}

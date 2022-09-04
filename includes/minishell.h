@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/04 17:45:02 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/04 21:07:34 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,12 +128,14 @@ void	free_tabs_exit_free(t_cmd *cmd, char **env, char **argv, char *err);
 
 /*EXEC*/
 void    *parent(t_cmd *cmd);
-void	child(t_cmd *cmd, int *fd);
+void	determine_exe_type(t_cmd *cmd);
 
 char	**create_env_tab(t_env *env, int nb_of_lines);
 char	**get_exec_env(void);
 char	**get_exec_args(t_cmd *cmd, int nb_of_arg);
 int		find_slash(t_cmd *cmd);
+
+int		find_nb_of_args(t_cmd *cmd);
 
 void	exec(t_cmd *cmd, const char *pathname);
 void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
