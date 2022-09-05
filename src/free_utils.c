@@ -1,25 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   free_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/22 14:14:03 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/31 18:20:50 by eleotard         ###   ########.fr       */
+/*   Created: 2022/09/01 17:33:22 by eleotard          #+#    #+#             */
+/*   Updated: 2022/09/02 22:41:48 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "minishell.h"
 
-int	ft_strncmp(const char *s1, const char *s2, size_t n)
+void	*free_tabtab(char **tab)
 {
-	size_t	i;
+	int	k;
 
-	if (n == 0)
-		return (0);
-	i = 0;
-	while ((s1[i] && s2[i]) && (s1[i] == s2[i]) && (i < n - 1))
-		i++;
-	return ((const unsigned char)s1[i] - (const unsigned char)s2[i]);
+	k = 0;
+	while (tab[k])
+		k++;
+	while (k >= 0)
+	{
+		free(tab[k]);
+		k--;
+	}
+	free(tab);
+	return (NULL);
+}
+
+void	free_tabs_exit_free(t_cmd *cmd, char **env, char **argv, char *err)
+{
+	if (env)
+		free_tabtab(env);
+	if (argv)
+		free_tabtab(argv);
+	exit_free(cmd, err, 'c', 4);
 }

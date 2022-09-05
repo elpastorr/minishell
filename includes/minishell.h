@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/08/15 17:37:07 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/04 21:07:34 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <signal.h>
+# include <sys/types.h>
+# include <sys/wait.h>
 
 typedef enum s_type
 {
@@ -39,7 +41,7 @@ typedef enum s_type
 {
 	word,	0 : "tout le reste"
 	fout,	1 : >> "this"
-	fin,	2 : "this" <<
+	fin,	2 : << "this"
 	pip,	3 : |
 	rin,	4 : <
 	rdin,	5 : <<
@@ -113,10 +115,43 @@ t_token	*cmd_arg(t_token **tmp);
 void	add_cmd(t_token **tmp, t_cmd *data);
 t_cmd	*pars_err(t_cmd *cmd);
 
+/*FREE*/
 void	free_token(t_token *token);
 void	free_cmd(t_cmd *cmd);
 void	free_env(t_env *env);
 void	ctfree(void *ptr, char *err, char type, int n);
 void	exit_free(void *ptr, char *err, char type, int n);
+
+/*FREE_UTILS*/
+void	*free_tabtab(char **tab);
+void	free_tabs_exit_free(t_cmd *cmd, char **env, char **argv, char *err);
+
+/*EXEC*/
+void    *parent(t_cmd *cmd);
+void	determine_exe_type(t_cmd *cmd);
+
+char	**create_env_tab(t_env *env, int nb_of_lines);
+char	**get_exec_env(void);
+char	**get_exec_args(t_cmd *cmd, int nb_of_arg);
+int		find_slash(t_cmd *cmd);
+
+int		find_nb_of_args(t_cmd *cmd);
+
+void	exec(t_cmd *cmd, const char *pathname);
+void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
+
+/*SIGNALS*/
+void	catch_signals(void);
+
+/*PATHS*/
+char	*find_path(t_cmd *cmd, char **tab_of_paths);
+char	*look_for_path(t_cmd *cmd);
+
+/*UTILS*/
+char	*ft_strjoin_m(char *base, char *read);
+char	*join(char *base, char *read);
+
+/*TEST PRINTS*/
+void	print_tabtab(char **tab);
 
 #endif

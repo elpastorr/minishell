@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handler.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:33:29 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/15 16:25:02 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/01 22:04:10 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ t_env	*handler(int opt, char **env, char *name, char *content)
 	if (name && !ft_strcmp(name, "?"))
 	{
 		exit_status = opt;
-		free(name);
+		//free(name);
 		return (NULL);
 	}
 	if (content && !ft_strcmp(content, "?"))
