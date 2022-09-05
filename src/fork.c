@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/05 15:03:06 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:37:43 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -305,8 +305,6 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 
 void	*parent(t_cmd *cmd)
 {
-//    int nb_of_pipes;
-    
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
     if (get_nbpipe(cmd)) //si ya des pipes
