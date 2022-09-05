@@ -96,7 +96,8 @@ void	tokenizing(t_token *token)
 			i = 0;
 			while (tmp->str && tmp->str[i])
 			{
-				if (tmp->str[i] == '$' && quot_status(tmp->str, i) != 1 && (ft_isalnum(tmp->str[i + 1]) || tmp->str[i + 1] == '_' || tmp->str[i + 1] == '?' || tmp->str[i + 1] == '$'))
+				if (tmp->str[i] == '$' && quot_status(tmp->str, i) != 1 && (ft_isalnum(tmp->str[i + 1])
+					|| tmp->str[i + 1] == '_' || tmp->str[i + 1] == '?' || tmp->str[i + 1] == '$'))
 					tmp->str = expend_words(tmp->str, i);
 				else
 					tmp->str = del_unused_quot(tmp->str);
