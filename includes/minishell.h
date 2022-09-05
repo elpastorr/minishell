@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/04 21:07:34 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/05 15:13:54 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,36 +79,45 @@ typedef struct s_env
 
 void	loop(void);
 
+/*PARSE*/
 void	get_word_index(char *s, int *i, int *start);
 void	split_words(char *s, int i, int start);
 void	tokenize(t_token *token);
 void	tokenizing(t_token *token);
 void	create_cmd(t_token *token);
 
+/*HANDLER*/
 t_env	*handler(int opt, char **env, char *name, char *val);
 
+/*TOKEN*/
 void	print_token(t_token *token);
 t_token	*new_token(t_token *next, char *str, int type);
 t_token	*token_syntax(t_token *token);
 
+/*QUOTE*/
 int		quot_status(char *s, int i);
 void	skip_quot(char *s, int *i);
 char	*del_unused_quot(char *s);
 void	del_unquot_extra(char *s, int *i, int *j, char quot);
 void	get_type(t_token *tmp, int *f_in, int *f_out);
 
+/*INIT*/
 t_env	*init_env(t_env *next, char *name, char *content);
 t_cmd	*init_cmd(t_cmd *next, t_token *arg, t_token *redir);
 t_cmd	*cmd_init(t_cmd *res, t_token **tmp, t_token *token);
 
+/*GET*/
 char	*get_name(char *env);
 char	*get_content(char *env);
+int		get_nbpipe(t_cmd *cmd);
 
+/*EXPAND*/
 char	*expand_special(char *tmp, char *util, int *j);
 char	*expand_extra(char *tmp, char *util, int *j, int i);
 char	*expend_words(char *s, int i);
 char	*replace_str(char *tmp, char *util, int j, int i);
 
+/*CMD*/
 void	print_cmd(t_cmd *cmd);
 t_token	*cmd_redir(t_token **tmp);
 t_token	*cmd_arg(t_token **tmp);
