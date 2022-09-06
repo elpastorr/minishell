@@ -1,0 +1,60 @@
+L'enfant fait une copie de tout ce quil y a dans le parent y compris les trucs malloc, du coup il faut bien free tout ce qu'il y a de malloc en lui avant de exit
+
+Conseil d'Elie :
+Quand tu fais un heredoc << tu readline sur l'entree standard et tu recuperes ce qui a ete marque dans un fichier que tu crees avec open
+    Ensuite si tu veux le cat par exemple, le "curseur" sera a la fin quand tu voudras le lire, du coup ca va juste rien lire
+    Dans ce cas tas juste a reopen le fichier pour le lire
+    Ensuite tu supprimes le fichier
+
+Derriere le pipe faut forcement que ce soit une commande
+
+Derriere le heredoc faut forcement que ce soit une string consideree comme EOF
+
+J'ai trouve un probleme dans le minishell :
+    cat << hello bjr
+    bjr devient argument de cat, du cp ca revient a faire "cat bjr" lorsque on finit par taper "hello"
+    si le fichier bjr existe pas ben faut marquer le message d'erreur "cat: bjr: No such file or directory"
+
+Aussi : 
+    << bjr cat
+    le 2e arg doit etre une commande sinon print "command not found : hello"
+
+bash --posix
+
+
+UI=ok
+cat << fin
+ >$HUI
+ >fin
+ok
+
+-> ca a affiche la valeur de UI
+
+cat << fin
+'$HUI'
+fin
+'ok'
+
+cat << fin
+heredoc> "$HUI" 
+heredoc> fin
+"ok"                  --> les heredocs peu importe les "" ou '' ca remplace tjrs par la valeur
+
+echo "$HUI"
+ok                    --> "" -> remplace par la valeur
+
+echo '$HUI'
+$HUI                  --> '' -> recrit la variable
+
+BUILT-INS
+
+/!\ echo -nnnnnnnnnnnnnnnnnnnnnn marche pareil que echo -n
+
+
+si on fait plusieurs << >> < >
+
+SI YA DES ARGS:
+    la commande prend les arg en entree 
+SI YA PAS D'ARGS:
+    la commande prend en entree un truc qui est genre "< file" (si celui-ci existe)
+    

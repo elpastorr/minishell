@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:20:09 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/30 14:25:23 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/08/31 19:33:21 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,9 @@ int		get_nbpipe(t_cmd *cmd)
 	int		i;
 	t_cmd	*tmp;
 
-	i = 0;
 	tmp = cmd;
-	while (tmp)
+	i = 0;
+	while (tmp->next)
 	{
 		i++;
 		tmp = tmp->next;

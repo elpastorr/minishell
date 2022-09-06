@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/05 15:13:54 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:44:44 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,20 +89,22 @@ void	create_cmd(t_token *token);
 /*HANDLER*/
 t_env	*handler(int opt, char **env, char *name, char *val);
 
-/*TOKEN*/
-void	print_token(t_token *token);
-t_token	*new_token(t_token *next, char *str, int type);
-t_token	*token_syntax(t_token *token);
-
-/*BUILT*/
-int		is_built(t_cmd *cmd);
-
 /*HEREDOC*/
 int		is_heredoc(t_cmd *cmd);
 char	*heredoc_strcat(char *tmp, char *s);
 char	*read_heredoc(char *s, char *tmp);
 char	*heredoc_extra(t_token *redir, char *tmp, int ret);
 char	*heredoc(t_cmd *cmd);
+
+/*REDIR*/
+void	print_err(char *file, char *s);
+int		file_err(t_token *tmp);
+t_cmd	*redir(t_cmd *cmd);
+
+/*TOKEN*/
+void	print_token(t_token *token);
+t_token	*new_token(t_token *next, char *str, int type);
+t_token	*token_syntax(t_token *token);
 
 /*QUOTE*/
 int		quot_status(char *s, int i);

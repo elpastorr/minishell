@@ -6,13 +6,13 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/30 16:51:15 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/05 16:42:05 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_heredoc(t_cmd *cmd)
+int		is_heredoc(t_cmd *cmd)
 {
 	t_token	*redir;
 
@@ -40,17 +40,18 @@ char	*heredoc_strcat(char *tmp, char *s)
 	if (tmp)
 	{
 		while (tmp && heredoc && tmp[i])
-			heredoc[i++] = tmp[i++];
+			heredoc[j++] = tmp[i++];
 		free(tmp);
 	}
+	j = 0;
 	if (s)
 	{
 		while (s && heredoc && s[j])
 			heredoc[i++] = s[j++];
 		free(s);
 	}
-	heredoc[j++] = '\n';
-	heredoc[j] = '\0';
+	heredoc[i++] = '\n';
+	heredoc[i] = '\0';
 	return (heredoc);
 }
 

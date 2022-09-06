@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/30 16:13:52 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:32:49 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ void	tokenizing(t_token *token)
 		tmp = tmp->next;
 	}
 	// print_token(token);
+	// ft_putstr_fd("\n\n", 1);
 	create_cmd(token);
 }
 
@@ -135,6 +136,8 @@ void	create_cmd(t_token *token)
 	}
 	if (!temp || !pars_err(temp))
 		return ;
-	print_cmd(temp);
-	// parent(temp);
+	// print_cmd(redir(temp));
+	if (is_heredoc(temp))
+		
+	parent(redir(temp));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 16:42:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/15 17:37:24 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/04 16:31:40 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ void	print_cmd(t_cmd *cmd)
 			printf("REDIR: ");
 			print_token(tmp->redir);
 		}
+		printf("fdin = %d\n", cmd->fdin);
+		printf("fdout = %d\n", cmd->fdout);
 		tmp = tmp->next;
 	}
 }
@@ -97,7 +99,7 @@ void	add_cmd(t_token **tmp, t_cmd *data)
 	}
 	else if ((*tmp)->type == word && !data->arg)
 		data->arg = cmd_arg(tmp);
-	else if ((*tmp)->type == word && !data->arg)
+	else if ((*tmp)->type == word && data->arg)
 	{
 		temp = data->arg;
 		while (temp->next)
