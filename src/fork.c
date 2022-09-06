@@ -3,48 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/04 21:09:28 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/05 17:37:43 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-
-
-
-int find_nb_of_pipes(t_cmd *cmd)
+int	is_built(t_cmd *cmd)
 {
-    t_cmd   *tmp;
-    int     i;
-
-    i = 0;
-    tmp = cmd;
-    while (tmp->next != NULL)
-    {
-        i++;
-        tmp = tmp->next;
-    }
-    return (i);
-}
-
-int is_built(t_cmd *cmd)
-{
-	if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "pwd")) //strcmp
+	if (!cmd || !cmd->arg || !cmd->arg->str)
+		return (0);
+	if (!strcmp(cmd->arg->str, "echo"))
 		return (1);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "cd"))
+	if (!strcmp(cmd->arg->str, "cd"))
 		return (2);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "echo"))
+	if (!strcmp(cmd->arg->str, "pwd"))
 		return (3);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "unset"))
+	if (!strcmp(cmd->arg->str, "export"))
 		return (4);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "export"))
+	if (!strcmp(cmd->arg->str, "unset"))
 		return (5);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "env"))
+	if (!strcmp(cmd->arg->str, "env"))
 		return (6);
+	if (!strcmp(cmd->arg->str, "exit"))
+		return (7);
 	return (0);
 }
 
@@ -193,7 +178,7 @@ int	find_slash(t_cmd *cmd)
 
 	tmp = cmd->arg;
 	i = 0;
-	if (!tmp)
+	if (!tmp || !tmp->str)
 		return (0);
 	while (tmp->str[i])
 	{
@@ -246,15 +231,13 @@ int	find_nb_of_args(t_cmd *cmd)
 
 void	exec(t_cmd *cmd, const char *pathname)
 {
-	int		nb_of_args;
 	char	**env;
 
-	nb_of_args = find_nb_of_args(cmd);
 	env = get_exec_env();
 	if (!env)
 		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
 	if (!cmd->redir)
-		exec_cmd_without_redir(cmd, pathname, nb_of_args, env);
+		exec_cmd_without_redir(cmd, pathname, find_nb_of_args(cmd), env);
 }
 
 
@@ -322,12 +305,9 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 
 void	*parent(t_cmd *cmd)
 {
-    int nb_of_pipes;
-    
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
-    nb_of_pipes = find_nb_of_pipes(cmd);
-    if (nb_of_pipes) //si ya des pipes
+    if (get_nbpipe(cmd)) //si ya des pipes
 		printf("Il y a plusieurs pipes\n"); //determine_exe_type(cmd, nb_of_pipes);
     else
     {

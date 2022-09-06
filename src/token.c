@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:55:11 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/15 16:01:12 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/05 16:50:55 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ t_token	*new_token(t_token *next, char *str, int type)
 		return (NULL);
 	tmp->type = type;
 	tmp->str = str;
-	tmp->fd = 1;
 	tmp->next = next;
 	return (tmp);
 }
