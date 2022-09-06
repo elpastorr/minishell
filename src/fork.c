@@ -6,32 +6,13 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/04 21:09:28 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/06 18:22:20 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-
-
-
-int find_nb_of_pipes(t_cmd *cmd)
-{
-    t_cmd   *tmp;
-    int     i;
-
-    i = 0;
-    tmp = cmd;
-    while (tmp->next != NULL)
-    {
-        i++;
-        tmp = tmp->next;
-    }
-    return (i);
-}
-
-int is_built(t_cmd *cmd)
+/*int is_built(t_cmd *cmd)
 {
 	if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "pwd")) //strcmp
 		return (1);
@@ -46,6 +27,53 @@ int is_built(t_cmd *cmd)
 	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "env"))
 		return (6);
 	return (0);
+}*/
+
+/*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)
+{
+	t_cmd	*tmp;
+	int		i;
+	int		fd[nb_of_pipes][2];
+
+	tmp = cmd;
+	i = 0;
+	while (i < nb_of_pipes)
+	{	
+		if (pipe(fd[i]) < 0)
+    	    return (NULL);
+		i++;
+	}
+    cmd->pid = fork();
+    if (cmd->pid < 0) //Erreur
+        return (NULL);
+	else if (cmd->pid == 0) //ENFANT
+	{
+		while (tmp)
+		{
+			if (is_exe(cmd))
+			{
+				dup2()
+			}
+		}
+	}
+    	child(cmd, fd);
+	else if (cmd->pid > 0) // ligne qui peut etre supp
+		waitpid(0, 0 ,0);
+}*/
+
+int find_nb_of_pipes(t_cmd *cmd)
+{
+    t_cmd   *tmp;
+    int     i;
+
+    i = 0;
+    tmp = cmd;
+    while (tmp->next != NULL)
+    {
+        i++;
+        tmp = tmp->next;
+    }
+    return (i);
 }
 
 int		is_exe(t_cmd *cmd)
@@ -204,31 +232,6 @@ int	find_slash(t_cmd *cmd)
 	return (0);
 }
 
-void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env)
-{
-	char	**argv;
-	
-	if (nb_of_arg == 0)
-	{
-		free_tabtab(env);
-		exit_free(cmd, "\nNO ARGS\n", 'c', 4);
-	}
-	else if (nb_of_arg >= 1)
-	{
-		argv = get_exec_args(cmd, nb_of_arg);
-		if (!argv)
-			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE\n");
-		//printf("%s - %s - %p\n", argv[0], argv[1], argv[2]);
-		if (!strcmp(pathname, argv[0]))
-			pathname = argv[0];
-		ctfree(cmd, NULL, 'c', 4);
-		if (execve(pathname, argv, env) == -1)
-			exit(4);
-	}
-	else
-		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE\n");
-}
-
 int	find_nb_of_args(t_cmd *cmd)
 {
 	t_token	*tmp;
@@ -244,6 +247,27 @@ int	find_nb_of_args(t_cmd *cmd)
 	return (nb_of_args);
 }
 
+void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env)
+{
+	char	**argv;
+	
+	if (nb_of_arg >= 1)
+	{
+		argv = get_exec_args(cmd, nb_of_arg);
+		if (!argv)
+			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE\n");
+		//printf("%s - %s - %p\n", argv[0], argv[1], argv[2]);
+		if (!strcmp(pathname, argv[0]))
+			pathname = argv[0];
+		ctfree(cmd, NULL, 'c', 4);
+		printf("\n///////////////////3///////////// \n");
+		if (execve(pathname, argv, env) == -1)
+			exit(4);
+	}
+	else
+		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE\n");
+}
+
 void	exec(t_cmd *cmd, const char *pathname)
 {
 	int		nb_of_args;
@@ -253,8 +277,8 @@ void	exec(t_cmd *cmd, const char *pathname)
 	env = get_exec_env();
 	if (!env)
 		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
-	if (!cmd->redir)
-		exec_cmd_without_redir(cmd, pathname, nb_of_args, env);
+	if (!cmd->redir) { printf("\n/////////2//////////\n");
+		exec_cmd_without_redir(cmd, pathname, nb_of_args, env);}
 }
 
 
@@ -262,63 +286,25 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 {
 	char	*path;
 
-	if (cmd->pid == 0) // on est dans l'enfant 
-	{
-		/*if (fd)
-			close(fd[0]);*/
-        if (is_built(cmd))
-            printf("C'est un built-in perso\n");
-        else if (!is_built(cmd) && !find_slash(cmd))
-        {
-            path = look_for_path(cmd);
-            if (!path)
-                exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
-			exec(cmd, path);
-        }
-		else if (!is_built(cmd) && find_slash(cmd))
-		{
-			if (access(cmd->arg->str, X_OK) == -1) {
-				printf("MAUVAIS EXECUTABLE\n");
-				exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
-			}
-			exec(cmd, cmd->arg->str);
-		}
-		else
-			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
+    if (!is_built(cmd) && !find_slash(cmd))
+    {
+        path = look_for_path(cmd);
+        if (!path)
+            exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
+		printf("\n/////////1//////////\n");
+		exec(cmd, path);
     }
-}
-
-/*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)
-{
-	t_cmd	*tmp;
-	int		i;
-	int		fd[nb_of_pipes][2];
-
-	tmp = cmd;
-	i = 0;
-	while (i < nb_of_pipes)
-	{	
-		if (pipe(fd[i]) < 0)
-    	    return (NULL);
-		i++;
-	}
-    cmd->pid = fork();
-    if (cmd->pid < 0) //Erreur
-        return (NULL);
-	else if (cmd->pid == 0) //ENFANT
+	else if (!is_built(cmd) && find_slash(cmd))
 	{
-		while (tmp)
-		{
-			if (is_exe(cmd))
-			{
-				dup2()
-			}
+		if (access(cmd->arg->str, X_OK) == -1) {
+			printf("MAUVAIS EXECUTABLE\n");
+			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
 		}
+		exec(cmd, cmd->arg->str);
 	}
-    	child(cmd, fd);
-	else if (cmd->pid > 0) // ligne qui peut etre supp
-		waitpid(0, 0 ,0);
-}*/
+	else
+		exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
+}
 
 void	*parent(t_cmd *cmd)
 {
@@ -326,9 +312,16 @@ void	*parent(t_cmd *cmd)
     
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
+	if (is_built(cmd))
+            printf("C'est un built-in perso\n");
     nb_of_pipes = find_nb_of_pipes(cmd);
-    if (nb_of_pipes) //si ya des pipes
-		printf("Il y a plusieurs pipes\n"); //determine_exe_type(cmd, nb_of_pipes);
+    if (nb_of_pipes) 
+	{
+		printf("\n/////////0//////////\n");
+		printf("Il ya des pipes\n");
+		ft_pipe(cmd);
+		//pipe(cmd);
+	}
     else
     {
         printf("Il n'y a pas de pipes\n");

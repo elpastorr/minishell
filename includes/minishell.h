@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/04 21:07:34 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/06 17:47:19 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,11 +134,15 @@ char	**create_env_tab(t_env *env, int nb_of_lines);
 char	**get_exec_env(void);
 char	**get_exec_args(t_cmd *cmd, int nb_of_arg);
 int		find_slash(t_cmd *cmd);
+int		is_built(t_cmd *cmd);
 
 int		find_nb_of_args(t_cmd *cmd);
 
 void	exec(t_cmd *cmd, const char *pathname);
 void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
+
+/*PIPES*/
+void	ft_pipe(t_cmd *cmd);
 
 /*SIGNALS*/
 void	catch_signals(void);
