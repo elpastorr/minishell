@@ -94,6 +94,16 @@ void	print_token(t_token *token);
 t_token	*new_token(t_token *next, char *str, int type);
 t_token	*token_syntax(t_token *token);
 
+/*BUILT*/
+int		is_built(t_cmd *cmd);
+
+/*HEREDOC*/
+int		is_heredoc(t_cmd *cmd);
+char	*heredoc_strcat(char *tmp, char *s);
+char	*read_heredoc(char *s, char *tmp);
+char	*heredoc_extra(t_token *redir, char *tmp, int ret);
+char	*heredoc(t_cmd *cmd);
+
 /*QUOTE*/
 int		quot_status(char *s, int i);
 void	skip_quot(char *s, int *i);

@@ -111,6 +111,5 @@ char	*heredoc(t_cmd *cmd)
 	}
 	if (!tmp)
 		tmp = ft_strdup("");
-	// printf("tmp : |%s|\n", tmp);
 	return (tmp);
 }
