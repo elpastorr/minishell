@@ -6,37 +6,16 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/05 17:37:43 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/07 17:47:34 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_built(t_cmd *cmd)
-{
-	if (!cmd || !cmd->arg || !cmd->arg->str)
-		return (0);
-	if (!strcmp(cmd->arg->str, "echo"))
-		return (1);
-	if (!strcmp(cmd->arg->str, "cd"))
-		return (2);
-	if (!strcmp(cmd->arg->str, "pwd"))
-		return (3);
-	if (!strcmp(cmd->arg->str, "export"))
-		return (4);
-	if (!strcmp(cmd->arg->str, "unset"))
-		return (5);
-	if (!strcmp(cmd->arg->str, "env"))
-		return (6);
-	if (!strcmp(cmd->arg->str, "exit"))
-		return (7);
-	return (0);
-}
-
 int		is_exe(t_cmd *cmd)
 {
 	char	*path;
-	
+
 	if (is_built(cmd))
 		return (1);
 	else if (!is_built(cmd) && !find_slash(cmd))
@@ -171,7 +150,7 @@ char	**get_exec_args(t_cmd *cmd, int nb_of_arg)
 	return (argv);	
 }
 
-int	find_slash(t_cmd *cmd)
+int		find_slash(t_cmd *cmd)
 {
 	t_token	*tmp;
 	int		i;
@@ -250,7 +229,7 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 		/*if (fd)
 			close(fd[0]);*/
         if (is_built(cmd))
-            printf("C'est un built-in perso\n");
+			exec_built(cmd);
         else if (!is_built(cmd) && !find_slash(cmd))
         {
             path = look_for_path(cmd);
@@ -268,7 +247,8 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 		}
 		else
 			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
-    }
+	}
+	// ex_env(cmd);
 }
 
 /*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)
@@ -307,11 +287,11 @@ void	*parent(t_cmd *cmd)
 {
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
-    if (get_nbpipe(cmd)) //si ya des pipes
+	if (get_nbpipe(cmd)) //si ya des pipes
 		printf("Il y a plusieurs pipes\n"); //determine_exe_type(cmd, nb_of_pipes);
-    else
-    {
-        printf("Il n'y a pas de pipes\n");
+	else
+	{
+		printf("Il n'y a pas de pipes\n");
 		cmd->pid = fork();
 		if (cmd->pid < 0)
 			return (NULL);
@@ -320,8 +300,11 @@ void	*parent(t_cmd *cmd)
 			printf("child pid = [%d]\n", cmd->pid);
 			determine_exe_type(cmd);
 		}
-		else { printf("parent pid = [%d]\n", cmd->pid);
-			wait(NULL);}
-    }
-    return (ctfree(cmd, NULL, 'c', 4), NULL);
+		else
+		{
+			printf("parent pid = [%d]\n", cmd->pid);
+			wait(NULL);
+		}
+	}
+	return (ctfree(cmd, NULL, 'c', 4), NULL);
 }

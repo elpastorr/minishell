@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:48:46 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/04 17:43:48 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/06 18:11:13 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,16 @@ void    loop(void)
 	}
 }
 
+// void	print_env(t_env *env)
+// {
+// 	while (env)
+// 	{
+// 		printf("name : %s, content : %s\n", env->name, env->content);
+// 		env = env->next;
+// 	}
+// 	printf("\n\n\n");
+// }
+
 int	main(int ac, char **av, char **env)
 {
 	t_env	*myenv;
@@ -84,6 +94,7 @@ int	main(int ac, char **av, char **env)
 	
 	handler(0, env, NULL, NULL);
 	myenv = handler(3, NULL, "SHLVL", NULL);
+	// print_env(myenv);
 	if (!myenv)
 		myenv = handler(3, NULL, "SHLVL", "1");
 	s = ft_itoa(ft_atoi(myenv->content) + 1);

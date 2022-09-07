@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 17:23:56 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/02 18:12:24 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/07 18:53:39 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,39 @@ char	*join(char *base, char *read)
 	new_read = ft_strjoin_m(base, read);
 	//free(read); // PENSER
 	return (new_read);
+}
+
+void	ft_free_opt(char *s1, char *s2, int opt)
+{
+	if (opt == 0)
+		free(s1);
+	else if (opt == 1)
+		free(s2);
+	else if (opt == 2)
+	{
+		free(s1);
+		free(s2);
+	}
+}
+
+char	*ft_strjoin_free(char *s1, char *s2, int opt)
+{
+	int		i;
+	int		j;
+	char	*dst;
+
+	if (!s1 || !s2)
+		return (NULL);
+	dst = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (dst == NULL)
+		return (NULL);
+	i = -1;
+	while (s1[++i])
+		dst[i] = s1[i];
+	j = -1;
+	while (s2[++j])
+		dst[i + j] = s2[j];
+	dst[i + j] = 0;
+	ft_free_opt(s1, s2, opt);
+	return (dst);
 }
