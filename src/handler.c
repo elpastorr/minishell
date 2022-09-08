@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:33:29 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/07 18:56:03 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:16:26 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static t_env	*add_env(t_env *env, char *name, char *content)
 	return (tmp);
 }
 
-static t_env	*del_env(t_env **env, char *del, t_env *save, t_env *tmp)
+static t_env	*del_env(t_env **env, char *name, t_env *save, t_env *tmp)
 {
-	if (*env && del && (!ft_strncmp((*env)->name, del, ft_strlen(del))))
+	if (*env && name && (!ft_strncmp((*env)->name, name, ft_strlen(name))))
 	{
 		*env = (*env)->next;
 		tmp->next = NULL;
@@ -38,7 +38,7 @@ static t_env	*del_env(t_env **env, char *del, t_env *save, t_env *tmp)
 	}
 	while (tmp)
 	{
-		if (del && !ft_strncmp(tmp->name, del, ft_strlen(del)))
+		if (name && !ft_strncmp(tmp->name, name, ft_strlen(name)))
 		{
 			save->next = tmp->next;
 			tmp->next = NULL;

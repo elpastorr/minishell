@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/07 18:58:29 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:26:42 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,11 @@ int		is_built(t_cmd *cmd);
 void	exec_built(t_cmd *cmd);
 void	ex_echo(t_cmd *cmd);
 void	ex_pwd(t_cmd *cmd);
+
+/*ENV_BUILT*/
+int		get_equal(char *s);
 void	ex_port(t_cmd *cmd);
+void	ex_unset(t_cmd *cmd);
 void	ex_env(t_cmd *cmd);
 
 /*FREE*/
