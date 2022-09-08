@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/06 17:32:28 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/07 17:47:34 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,7 +247,8 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 		}
 		else
 			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
-    }
+	}
+	// ex_env(cmd);
 }
 
 /*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)

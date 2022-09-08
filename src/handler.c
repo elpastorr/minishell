@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:33:29 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/06 17:30:29 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:16:26 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,9 @@ static t_env	*add_env(t_env *env, char *name, char *content)
 	return (tmp);
 }
 
-static t_env	*del_env(t_env **env, char *del, t_env *save, t_env *tmp)
+static t_env	*del_env(t_env **env, char *name, t_env *save, t_env *tmp)
 {
-	if (*env && del && (!ft_strncmp((*env)->name, del, ft_strlen(del))))
+	if (*env && name && (!ft_strncmp((*env)->name, name, ft_strlen(name))))
 	{
 		*env = (*env)->next;
 		tmp->next = NULL;
@@ -38,7 +38,7 @@ static t_env	*del_env(t_env **env, char *del, t_env *save, t_env *tmp)
 	}
 	while (tmp)
 	{
-		if (del && !ft_strncmp(tmp->name, del, ft_strlen(del)))
+		if (name && !ft_strncmp(tmp->name, name, ft_strlen(name)))
 		{
 			save->next = tmp->next;
 			tmp->next = NULL;
@@ -76,7 +76,7 @@ static t_env	*init_handler(char **env, int *exit_status)
 	return (myenv);
 }
 
-static t_env	*mod_env(t_env **env, char *name, char *content)
+static t_env	*mod_env(t_env **env, char *name, char *content, int opt)
 {
 	t_env	*tmp;
 
@@ -85,7 +85,9 @@ static t_env	*mod_env(t_env **env, char *name, char *content)
 	{
 		if (!ft_strcmp(name, tmp->name))
 		{
-			if (content)
+			if (content && opt == 5)
+				tmp->content = ft_strjoin_free(tmp->content, content, 1);
+			else if (content && opt == 3)
 			{
 				free(tmp->content);
 				tmp->content = ft_strdup(content);
@@ -102,15 +104,16 @@ static t_env	*mod_env(t_env **env, char *name, char *content)
 	return (tmp);
 }
 
-// void	print_env(t_env *env)
-// {
-// 	while (env)
-// 	{
-// 		printf("name : %s, content : %s\n", env->name, env->content);
-// 		env = env->next;
-// 	}
-// 	printf("\n\n\n");
-// }
+void	print_env(t_env *env)
+{
+	printf("%d\n", !env);
+	while (env)
+	{
+		printf("name : %s, content : %s\n", env->name, env->content);
+		env = env->next;
+	}
+	printf("\n\n\n");
+}
 
 t_env	*handler(int opt, char **env, char *name, char *content)
 {
@@ -133,8 +136,8 @@ t_env	*handler(int opt, char **env, char *name, char *content)
 		tmp = add_env(myenv, name, content);
 	else if (opt == 2)
 		tmp = del_env(&myenv, name, NULL, myenv);
-	else if (opt == 3)
-		tmp = mod_env(&myenv, name, content);
+	else if (opt == 3 || opt == 5)
+		tmp = mod_env(&myenv, name, content, opt);
 	else if (opt == 4)
 		free_env(myenv);
 	return (tmp);

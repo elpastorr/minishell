@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/06 18:40:11 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/08 16:26:42 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	create_cmd(t_token *token);
 
 /*HANDLER*/
 t_env	*handler(int opt, char **env, char *name, char *val);
+void	print_env(t_env *env);
 
 /*HEREDOC*/
 int		is_heredoc(t_cmd *cmd);
@@ -141,7 +142,11 @@ int		is_built(t_cmd *cmd);
 void	exec_built(t_cmd *cmd);
 void	ex_echo(t_cmd *cmd);
 void	ex_pwd(t_cmd *cmd);
+
+/*ENV_BUILT*/
+int		get_equal(char *s);
 void	ex_port(t_cmd *cmd);
+void	ex_unset(t_cmd *cmd);
 void	ex_env(t_cmd *cmd);
 
 /*FREE*/
@@ -179,6 +184,9 @@ char	*look_for_path(t_cmd *cmd);
 /*UTILS*/
 char	*ft_strjoin_m(char *base, char *read);
 char	*join(char *base, char *read);
+void	ft_free_opt(char *s1, char *s2, int opt);
+char	*ft_strjoin_free(char *s1, char *s2, int opt);
+
 
 /*TEST PRINTS*/
 void	print_tabtab(char **tab);
