@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/08 19:03:06 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/09 00:45:12 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,49 +89,46 @@ void	ft_pipe(t_cmd *cmd)
 			if (tmp->next->fdin == 0)
 				tmp->next->fdin = fd[i][0];
 		}
-		printf("fd[i][0] = %d && fd[i][1] = %d && i = %d\n", fd[i][0], fd[i][1], i);
+		//printf("fd[i][0] = %d && fd[i][1] = %d && i = %d\n", fd[i][0], fd[i][1], i);
+		printf("cmd = %s, fdin = %d && fdout = %d && i = %d\n", tmp->arg->str, tmp->fdin, tmp->fdout, i);
 		pid = fork();
 		if (pid < 0)
 			return ;
 		if (pid == 0)
 		{
-			//sleep(10);
 			if (tmp->fdin != 0)
+			{
 				dup2(tmp->fdin, 0);
+				close(tmp->fdin);
+			}
+				
 				
 			if (tmp->fdout != 1)
 			{
 				printf("\nJJHGHJDGHDGHDGJK\n");
 				dup2(tmp->fdout, 1);
+				close(tmp->fdout);
 			}
-			//sleep(10);
 			if (i == 0)
 			{
 				close(fd[0][0]);
 				close(fd[1][0]);
 				close(fd[1][1]);
+				if (!tmp->next)
+					close(fd[0][1]);
 			}
 			else if (i == 1)
 			{
 				close(fd[1][0]);
 				close(fd[0][0]);
 				close(fd[0][1]);
+				if (!tmp->next)
+					close(fd[1][1]);
 			}
 			determine_exe_type(tmp);
 		}
 		else 
 		{
-			/*if (i == 0)
-			{
-				close(fd[0][0]);
-				close(fd[0][1]);
-			}
-			else
-			{
-				close(fd[1][0]);
-				close(fd[1][1]);
-			}*/
-			
 			if (i == 1 && j > 0 && j != cmd_size - 1)
 			{
 				close(fd[0][0]);
