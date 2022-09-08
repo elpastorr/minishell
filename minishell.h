@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/08 18:06:49 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/05 18:44:44 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,20 +89,22 @@ void	create_cmd(t_token *token);
 /*HANDLER*/
 t_env	*handler(int opt, char **env, char *name, char *val);
 
-/*TOKEN*/
-void	print_token(t_token *token);
-t_token	*new_token(t_token *next, char *str, int type);
-t_token	*token_syntax(t_token *token);
-
-/*BUILT*/
-int		is_built(t_cmd *cmd);
-
 /*HEREDOC*/
 int		is_heredoc(t_cmd *cmd);
 char	*heredoc_strcat(char *tmp, char *s);
 char	*read_heredoc(char *s, char *tmp);
 char	*heredoc_extra(t_token *redir, char *tmp, int ret);
 char	*heredoc(t_cmd *cmd);
+
+/*REDIR*/
+void	print_err(char *file, char *s);
+int		file_err(t_token *tmp);
+t_cmd	*redir(t_cmd *cmd);
+
+/*TOKEN*/
+void	print_token(t_token *token);
+t_token	*new_token(t_token *next, char *str, int type);
+t_token	*token_syntax(t_token *token);
 
 /*QUOTE*/
 int		quot_status(char *s, int i);
@@ -134,10 +136,6 @@ t_token	*cmd_arg(t_token **tmp);
 void	add_cmd(t_token **tmp, t_cmd *data);
 t_cmd	*pars_err(t_cmd *cmd);
 
-/*REDIR*/
-t_cmd	*redir(t_cmd *cmd);
-int		file_err(t_token *tmp);
-
 /*FREE*/
 void	free_token(t_token *token);
 void	free_cmd(t_cmd *cmd);
@@ -157,16 +155,11 @@ char	**create_env_tab(t_env *env, int nb_of_lines);
 char	**get_exec_env(void);
 char	**get_exec_args(t_cmd *cmd, int nb_of_arg);
 int		find_slash(t_cmd *cmd);
-int		is_built(t_cmd *cmd);
 
 int		find_nb_of_args(t_cmd *cmd);
 
 void	exec(t_cmd *cmd, const char *pathname);
 void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
-
-/*PIPES*/
-void	ft_pipe(t_cmd *cmd);
-
 
 /*SIGNALS*/
 void	catch_signals(void);
@@ -181,6 +174,5 @@ char	*join(char *base, char *read);
 
 /*TEST PRINTS*/
 void	print_tabtab(char **tab);
-void	print_err(char *file, char *s);
 
 #endif

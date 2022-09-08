@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/06 18:22:20 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/08 18:05:22 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,7 @@ int	find_slash(t_cmd *cmd)
 
 	tmp = cmd->arg;
 	i = 0;
-	if (!tmp)
+	if (!tmp || !tmp->str)
 		return (0);
 	while (tmp->str[i])
 	{
@@ -270,15 +270,13 @@ void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, cha
 
 void	exec(t_cmd *cmd, const char *pathname)
 {
-	int		nb_of_args;
 	char	**env;
 
-	nb_of_args = find_nb_of_args(cmd);
 	env = get_exec_env();
 	if (!env)
 		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
 	if (!cmd->redir) { printf("\n/////////2//////////\n");
-		exec_cmd_without_redir(cmd, pathname, nb_of_args, env);}
+		exec_cmd_without_redir(cmd, pathname, find_nb_of_args(cmd), env);}
 }
 
 

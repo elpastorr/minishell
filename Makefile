@@ -1,7 +1,14 @@
 SRCS =	src/minishell.c src/expand.c src/init.c src/parse.c \
 		src/quote.c src/token.c src/get.c src/free.c src/handler.c \
-		src/cmd.c src/built.c src/pipe.c src/heredoc.c src/fork.c \
-		src/utils.c src/free_utils.c src/print_test.c src/signals.c
+		src/cmd.c src/heredoc.c \
+		src/fork.c \
+		src/pipe.c \
+		src/utils.c \
+		src/free_utils.c \
+		src/print_test.c \
+		src/signals.c \
+		src/redir.c \
+		src/built.c \
 
 OBJS =	${SRCS:.c=.o}
 

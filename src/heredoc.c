@@ -6,13 +6,13 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/31 19:31:50 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/05 16:42:05 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	is_heredoc(t_cmd *cmd)
+int		is_heredoc(t_cmd *cmd)
 {
 	t_token	*redir;
 
@@ -111,6 +111,5 @@ char	*heredoc(t_cmd *cmd)
 	}
 	if (!tmp)
 		tmp = ft_strdup("");
-	// printf("tmp : |%s|\n", tmp);
 	return (tmp);
 }
