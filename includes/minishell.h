@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/08 18:06:49 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/08 18:34:31 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ t_cmd	*cmd_init(t_cmd *res, t_token **tmp, t_token *token);
 /*GET*/
 char	*get_name(char *env);
 char	*get_content(char *env);
-int		get_nbpipe(t_cmd *cmd);
+int		get_cmd_size(t_cmd *cmd);
 
 /*EXPAND*/
 char	*expand_special(char *tmp, char *util, int *j);

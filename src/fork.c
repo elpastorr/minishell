@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/08 18:05:22 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/08 18:35:17 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@
 		waitpid(0, 0 ,0);
 }*/
 
-int find_nb_of_pipes(t_cmd *cmd)
+/*int find_nb_of_pipes(t_cmd *cmd)
 {
     t_cmd   *tmp;
     int     i;
@@ -74,7 +74,7 @@ int find_nb_of_pipes(t_cmd *cmd)
         tmp = tmp->next;
     }
     return (i);
-}
+}*/
 
 int		is_exe(t_cmd *cmd)
 {
@@ -306,19 +306,15 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 
 void	*parent(t_cmd *cmd)
 {
-    int nb_of_pipes;
-    
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
 	if (is_built(cmd))
             printf("C'est un built-in perso\n");
-    nb_of_pipes = find_nb_of_pipes(cmd);
-    if (nb_of_pipes) 
+    if (get_cmd_size(cmd) > 1) 
 	{
 		printf("\n/////////0//////////\n");
 		printf("Il ya des pipes\n");
 		ft_pipe(cmd);
-		//pipe(cmd);
 	}
     else
     {

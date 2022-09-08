@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/06 19:17:16 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/08 19:03:06 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,28 @@
 	}
 }*/
 
+int	get_cmd_size(t_cmd *cmd)
+{
+	t_cmd	*tmp;
+	int		i;
+
+	i = 0;
+	tmp = cmd;
+	while (tmp)
+	{
+		tmp = tmp->next;
+		i++;
+	}
+	printf("SIZE CMD = %d\n", i);
+	return (i);
+}
+
 void	ft_pipe(t_cmd *cmd)
 {
 	int	i;
 	int	j;
 	int	pid;
-	//int lst_size;
+	int cmd_size;
 	int	fd[2][2];
 	t_cmd	*tmp;
 
@@ -56,6 +72,7 @@ void	ft_pipe(t_cmd *cmd)
 	j = 0;
 	//lst_size = ft_lstsize(cmd);
 	tmp = cmd;
+	cmd_size = get_cmd_size(cmd);
 	while (tmp)
 	{
 		if (i == 1)
@@ -70,11 +87,9 @@ void	ft_pipe(t_cmd *cmd)
 			if (tmp->fdout == 1)
 				tmp->fdout = fd[i][1];
 			if (tmp->next->fdin == 0)
-			{
 				tmp->next->fdin = fd[i][0];
-				printf("fd[i][0] = %d && fd[i][1] = %d\n", fd[i][0], fd[i][1]);
-			}
 		}
+		printf("fd[i][0] = %d && fd[i][1] = %d && i = %d\n", fd[i][0], fd[i][1], i);
 		pid = fork();
 		if (pid < 0)
 			return ;
@@ -82,39 +97,80 @@ void	ft_pipe(t_cmd *cmd)
 		{
 			//sleep(10);
 			if (tmp->fdin != 0)
-			{
 				dup2(tmp->fdin, 0);
-				//close(tmp->fdin);
-			}
 				
 			if (tmp->fdout != 1)
 			{
 				printf("\nJJHGHJDGHDGHDGJK\n");
 				dup2(tmp->fdout, 1);
-				//close(tmp->fdout);
 			}
-				
 			//sleep(10);
+			if (i == 0)
+			{
+				close(fd[0][0]);
+				close(fd[1][0]);
+				close(fd[1][1]);
+			}
+			else if (i == 1)
+			{
+				close(fd[1][0]);
+				close(fd[0][0]);
+				close(fd[0][1]);
+			}
 			determine_exe_type(tmp);
 		}
-		/*else 
+		else 
 		{
-		// if (i == 1 && j > 0)
-			// {
-			// 	close(fd[0][0]);
-			// 	close(fd[0][1]);
-			// }
-			// else if (i == 0 && j > 0)
-			// {
-			// 	close(fd[1][0]);
-			// 	close(fd[1][1]);
-			// }
-			//waitpid(0,0,0);
-		}*/
+			/*if (i == 0)
+			{
+				close(fd[0][0]);
+				close(fd[0][1]);
+			}
+			else
+			{
+				close(fd[1][0]);
+				close(fd[1][1]);
+			}*/
+			
+			if (i == 1 && j > 0 && j != cmd_size - 1)
+			{
+				close(fd[0][0]);
+				close(fd[1][1]);
+			}
+			else if (i == 0 && j > 0 && j != cmd_size - 1)
+			{
+				close(fd[1][0]);
+				close(fd[0][1]);
+			}
+			else if (j == cmd_size - 1)
+			{
+				if (i == 0)
+				{
+					close(fd[1][0]);
+					close(fd[0][1]);
+					close(fd[0][0]);
+				}
+				else
+				{
+					close(fd[0][0]);
+					close(fd[1][1]);
+					close(fd[1][0]);
+				}
+				
+			}
+			else if (i == 0 && j == 0)
+				close(fd[0][1]);
+		}
+		
 		j++;
 		tmp = tmp->next;
 	}
 	//boucle avec i jusqua la fin de la list et attendre a chque fois chaue commande
-	waitpid(0,0,0);
-	waitpid(0,0,0);
+	
+	i = 0;
+	while (i < cmd_size)
+	{
+		waitpid(0,0,0);
+		i++;
+	}
 }

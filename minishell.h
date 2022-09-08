@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/05 18:44:44 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/08 18:34:49 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ char	**get_exec_env(void);
 char	**get_exec_args(t_cmd *cmd, int nb_of_arg);
 int		find_slash(t_cmd *cmd);
 
-int		find_nb_of_args(t_cmd *cmd);
+int		find__args(t_cmd *cmd);
 
 void	exec(t_cmd *cmd, const char *pathname);
 void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
