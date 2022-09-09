@@ -47,22 +47,8 @@ void	exec_built(t_cmd *cmd)
 		ex_unset(cmd);
 	else if (is_built(cmd) == 6)
 		ex_env(cmd);
-	// else if (is_built(cmd) == 7)
-	// 	ex_it(cmd);
-}
-
-int	only_n(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] != 'n')
-			return (0);
-		i++;
-	}
-	return (1);
+	else if (is_built(cmd) == 7)
+		ex_it(cmd);
 }
 
 void	ex_echo(t_cmd *cmd)
@@ -88,6 +74,16 @@ void	ex_echo(t_cmd *cmd)
 		write(cmd->fdout, "\n", 1);
 }
 
+// void	ex_cd(t_cmd *cmd)
+// {
+// 	char	buf[4096];
+// 	char	s;
+
+// 	if (cmd->arg->next)
+// 		s = cmd->arg->next->str;
+// 	if ()
+// }
+
 void	ex_pwd(t_cmd *cmd)
 {
 	char	*s;
@@ -101,16 +97,22 @@ void	ex_pwd(t_cmd *cmd)
 
 void	ex_it(t_cmd *cmd)
 {
-	t_token	*arg;
-	int		exit_status;
+	t_token			*arg;
+	long long int	exit_status;
+	int				atoi_err;
 
 	if (!cmd->arg->next)
 		exit_free(cmd, NULL, 'c', 0);
 	if (cmd->arg->next->next)
-	{
-		free_cmd(cmd);
-	}
+		return (ctfree(cmd, "Minishell: exit: too many arguments", 'c', 1));
 	arg = cmd->arg->next;
-	exit_status = get_exit_code(arg);
-
+	atoi_err = 0;
+	exit_status = exit_atoi(arg->str, &atoi_err);
+	if (atoi_err == 0)
+	{
+		// handler(exit_status, NULL, "?", NULL);
+		exit_free(cmd, "exit", 'c', exit_status);
+	}
+	print_err("Minishell: exit: %s: numeric argument required\n", arg->str);
+	exit_free(cmd, NULL, 'c', atoi_err);
 }

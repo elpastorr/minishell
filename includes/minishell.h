@@ -142,6 +142,13 @@ int		is_built(t_cmd *cmd);
 void	exec_built(t_cmd *cmd);
 void	ex_echo(t_cmd *cmd);
 void	ex_pwd(t_cmd *cmd);
+void	ex_it(t_cmd *cmd);
+
+/*BUILT_UTILS*/
+int				ft_isspace(char c);
+int				only_n(char *s);
+long long int   exit_atoi(char *s, int *err);
+long long int   exit_atoi_plus(char *s, int i, unsigned long long int n, int neg, int *err);
 
 /*ENV_BUILT*/
 int		get_equal(char *s);
