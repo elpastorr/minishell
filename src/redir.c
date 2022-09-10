@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/05 18:26:12 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/10 17:56:53 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,23 +40,31 @@ int		file_err(t_token *tmp)
 t_cmd	*redir(t_cmd *cmd)
 {
 	t_token	*tmp;
+	t_cmd	*cmd_tmp;
 
-	tmp = cmd->redir;
-	while (tmp)
+	cmd_tmp = cmd;
+	while (cmd)
 	{
-		if (tmp->type == rout)
-			cmd->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (tmp->type == rdout)
-			cmd->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else if (tmp->type == rin)
-			cmd->fdin = open(tmp->next->str, O_RDONLY);
-		if (tmp->type == rout || tmp->type == rdout)
-			tmp->fd = cmd->fdout;
-		else if (tmp->type == rin)
-			tmp->fd = cmd->fdin;
-		tmp = tmp->next;
+		printf("\nPASSEE\n");
+		tmp = cmd->redir;
+		while (tmp)
+		{
+			if (tmp->type == rout)
+				cmd->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			else if (tmp->type == rdout)
+				cmd->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			else if (tmp->type == rin) // peut etre add if (tmp->next->str)
+				cmd->fdin = open(tmp->next->str, O_RDONLY);
+			printf("cmd = %s\tcmd_.fdin = %d\n", cmd->arg->str, cmd->fdin);
+			/*if (tmp->type == rout || tmp->type == rdout)
+				tmp->fd = cmd->fdout;
+			else if (tmp->type == rin)
+				tmp->fd = cmd->fdin;*/
+			tmp = tmp->next;
+			//file_err(tmp);cat 
+		}
+		cmd = cmd->next;
 	}
-	tmp = cmd->redir;
-	file_err(tmp);
-	return (cmd);
+	
+	return (cmd_tmp);
 }

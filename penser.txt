@@ -60,3 +60,6 @@ SI YA PAS D'ARGS:
 
 Si ya un melange pipes et << < >> >
     Les redirections sont prioritaires sur les pipes, dans ce caas la faut pas oublier de les close
+
+10/09/22
+cmd.c : changer le print cmd incorrect avec tmp->fdin

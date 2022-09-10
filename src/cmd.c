@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 16:42:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/08 18:23:50 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/10 17:58:30 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void	print_cmd(t_cmd *cmd)
 			printf("REDIR: ");
 			print_token(tmp->redir);
 		}
-		printf("fdin = %d\n", cmd->fdin);
-		printf("fdout = %d\n", cmd->fdout);
+		printf("fdin = %d\n", tmp->fdin);
+		printf("fdout = %d\n", tmp->fdout);
 		tmp = tmp->next;
 	}
 }
