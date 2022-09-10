@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/08 18:35:17 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/10 16:02:51 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -247,10 +247,16 @@ int	find_nb_of_args(t_cmd *cmd)
 	return (nb_of_args);
 }
 
-void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env)
+void	exec(t_cmd *cmd, const char *pathname)
 {
 	char	**argv;
+	char	**env;
+	int		nb_of_arg;
 	
+	env = get_exec_env();
+	if (!env)
+		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
+	nb_of_arg = find_nb_of_args(cmd);
 	if (nb_of_arg >= 1)
 	{
 		argv = get_exec_args(cmd, nb_of_arg);
@@ -268,23 +274,13 @@ void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, cha
 		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE\n");
 }
 
-void	exec(t_cmd *cmd, const char *pathname)
-{
-	char	**env;
-
-	env = get_exec_env();
-	if (!env)
-		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
-	if (!cmd->redir) { printf("\n/////////2//////////\n");
-		exec_cmd_without_redir(cmd, pathname, find_nb_of_args(cmd), env);}
-}
-
-
 void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 {
 	char	*path;
 
-    if (!is_built(cmd) && !find_slash(cmd))
+	if (is_built(cmd))
+		printf("C'est un built-in perso\n");
+    else if (!is_built(cmd) && !find_slash(cmd))
     {
         path = look_for_path(cmd);
         if (!path)
@@ -308,9 +304,7 @@ void	*parent(t_cmd *cmd)
 {
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
-	if (is_built(cmd))
-            printf("C'est un built-in perso\n");
-    if (get_cmd_size(cmd) > 1) 
+    else if (get_cmd_size(cmd) > 1) 
 	{
 		printf("\n/////////0//////////\n");
 		printf("Il ya des pipes\n");
@@ -323,12 +317,9 @@ void	*parent(t_cmd *cmd)
 		if (cmd->pid < 0)
 			return (NULL);
 		if (cmd->pid == 0)
-		{
-			printf("child pid = [%d]\n", cmd->pid);
 			determine_exe_type(cmd);
-		}
-		else { printf("parent pid = [%d]\n", cmd->pid);
-			wait(NULL);}
+		else
+			wait(NULL);
     }
     return (ctfree(cmd, NULL, 'c', 4), NULL);
 }
