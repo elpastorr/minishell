@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/09 00:45:12 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/10 15:40:10 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,9 @@ int	get_cmd_size(t_cmd *cmd)
 	return (i);
 }
 
+//void	close_fds_parent(int *i, int *j)
+
+
 void	ft_pipe(t_cmd *cmd)
 {
 	int	i;
@@ -70,7 +73,6 @@ void	ft_pipe(t_cmd *cmd)
 
 	i = 1;
 	j = 0;
-	//lst_size = ft_lstsize(cmd);
 	tmp = cmd;
 	cmd_size = get_cmd_size(cmd);
 	while (tmp)
@@ -79,9 +81,8 @@ void	ft_pipe(t_cmd *cmd)
 			i = 0;
 		else if (i == 0)
 			i = 1;
-		
 		if (pipe(fd[i]) < 0)
-			return ;
+			return ;//exit error
 		if (tmp->next)
 		{
 			if (tmp->fdout == 1)
@@ -89,39 +90,32 @@ void	ft_pipe(t_cmd *cmd)
 			if (tmp->next->fdin == 0)
 				tmp->next->fdin = fd[i][0];
 		}
-		//printf("fd[i][0] = %d && fd[i][1] = %d && i = %d\n", fd[i][0], fd[i][1], i);
-		printf("cmd = %s, fdin = %d && fdout = %d && i = %d\n", tmp->arg->str, tmp->fdin, tmp->fdout, i);
+		printf("cmd = %s\tfd[i][0] = %d\tfd[i][1] = %d\ti = %d\n", tmp->arg->str, fd[i][0], fd[i][1], i);
+		printf("cmd = %s\tfdin = %d\tfdout = %d\ti = %d\n\n", tmp->arg->str, tmp->fdin, tmp->fdout, i);
 		pid = fork();
 		if (pid < 0)
-			return ;
+			break ;
 		if (pid == 0)
 		{
 			if (tmp->fdin != 0)
 			{
 				dup2(tmp->fdin, 0);
 				close(tmp->fdin);
-			}
-				
-				
+			}	
 			if (tmp->fdout != 1)
 			{
-				printf("\nJJHGHJDGHDGHDGJK\n");
 				dup2(tmp->fdout, 1);
 				close(tmp->fdout);
 			}
 			if (i == 0)
 			{
 				close(fd[0][0]);
-				close(fd[1][0]);
-				close(fd[1][1]);
 				if (!tmp->next)
 					close(fd[0][1]);
 			}
 			else if (i == 1)
 			{
 				close(fd[1][0]);
-				close(fd[0][0]);
-				close(fd[0][1]);
 				if (!tmp->next)
 					close(fd[1][1]);
 			}
@@ -129,45 +123,43 @@ void	ft_pipe(t_cmd *cmd)
 		}
 		else 
 		{
-			if (i == 1 && j > 0 && j != cmd_size - 1)
+			if (i == 0)
 			{
-				close(fd[0][0]);
-				close(fd[1][1]);
-			}
-			else if (i == 0 && j > 0 && j != cmd_size - 1)
-			{
-				close(fd[1][0]);
-				close(fd[0][1]);
-			}
-			else if (j == cmd_size - 1)
-			{
-				if (i == 0)
+				if (j == 0)
+					close(fd[0][1]);
+				else if (j > 0 && j != cmd_size - 1)
+				{
+					close(fd[1][0]);
+					close(fd[0][1]);
+				}
+				else if (j == cmd_size - 1)
 				{
 					close(fd[1][0]);
 					close(fd[0][1]);
 					close(fd[0][0]);
 				}
-				else
+			}
+			else if (i == 1)
+			{
+				if (j > 0 && j != cmd_size - 1)
 				{
 					close(fd[0][0]);
 					close(fd[1][1]);
-					close(fd[1][0]);
 				}
-				
+				else if (j == cmd_size - 1)
+				{
+					close(fd[0][0]);
+					close(fd[1][1]);
+					close(fd[1][0]); //et la //a voir si faut pas tout close ici
+				}
 			}
-			else if (i == 0 && j == 0)
-				close(fd[0][1]);
 		}
-		
 		j++;
 		tmp = tmp->next;
 	}
-	//boucle avec i jusqua la fin de la list et attendre a chque fois chaue commande
-	
-	i = 0;
-	while (i < cmd_size)
-	{
+	if (pid < 0)
+		return ;
+	i = -1;
+	while (++i < cmd_size)
 		waitpid(0,0,0);
-		i++;
-	}
 }
