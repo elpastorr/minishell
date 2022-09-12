@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/10 16:02:51 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/12 21:50:59 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ char	*look_for_path(t_cmd *cmd)
 	char	*cmd_path;
 	
 	whole_path = handler(3, NULL, "PATH", NULL);
-	printf("ligne entiere de chemins = [%s]\n", whole_path->content);
+	//printf("ligne entiere de chemins = [%s]\n", whole_path->content);
 	tab_of_paths = ft_split(whole_path->content, ':');
 	if (!tab_of_paths)
 		return (ctfree(cmd, "ERREUR MALLOC EXEC PATH", 'c', -1), NULL);
@@ -200,8 +200,8 @@ char	**get_exec_args(t_cmd *cmd, int nb_of_arg)
 	if (!argv)
 		return (NULL);
 	tmp = cmd->arg;
-	printf("premier arg str [%s]\n", tmp->str);
-	printf("nb of arg [%d]\n", nb_of_arg);
+	//printf("premier arg str [%s]\n", tmp->str);
+	//printf("nb of arg [%d]\n", nb_of_arg);
 	i = -1;
 	while ((++i < nb_of_arg) && tmp)
 	{

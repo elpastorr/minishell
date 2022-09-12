@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/10 17:56:53 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/12 19:01:12 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ t_cmd	*redir(t_cmd *cmd)
 	cmd_tmp = cmd;
 	while (cmd)
 	{
-		printf("\nPASSEE\n");
 		tmp = cmd->redir;
 		while (tmp)
 		{
@@ -60,8 +59,8 @@ t_cmd	*redir(t_cmd *cmd)
 				tmp->fd = cmd->fdout;
 			else if (tmp->type == rin)
 				tmp->fd = cmd->fdin;*/
+			file_err(tmp);
 			tmp = tmp->next;
-			//file_err(tmp);cat 
 		}
 		cmd = cmd->next;
 	}

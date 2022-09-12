@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe.c                                             :+:      :+:    :+:   */
+/*   pipe_copy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/12 18:54:00 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/12 22:37:51 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,38 +64,35 @@ int	get_cmd_size(t_cmd *cmd)
 
 void	ft_pipe(t_cmd *cmd)
 {
-	int	i;
-	int	j;
 	int	pid;
+	int i;
 	int cmd_size;
-	int	fd[2][2];
+	//int	fd[2][2];
 	t_cmd	*tmp;
-	//int fds[2];
-	//int previous;
-	// initialise fd[0] = -1
-	//previous = fds[0];
-
-	i = 1;
-	j = 0;
+	int fd[2];
+	int previous;
+	
+	fd[0] = 0;
 	tmp = cmd;
 	cmd_size = get_cmd_size(cmd);
 	while (tmp)
 	{
-		if (i == 1)
-			i = 0;
-		else if (i == 0)
-			i = 1;
-		if (pipe(fd[i]) < 0)
-			return ;//exit errorat
+		previous = fd[0];
+		printf("PREVIOUS = %d\n\n", previous);
 		if (tmp->next)
 		{
+			if (pipe(fd) < 0)
+			{
+				perror("Pipe : ");
+				return ;
+			}
 			if (tmp->fdout == 1)
-				tmp->fdout = fd[i][1];
-			if (tmp->next->fdin == 0)
-				tmp->next->fdin = fd[i][0];
+				tmp->fdout = fd[1];
 		}
-		printf("cmd = %s\tfd[i][0] = %d\tfd[i][1] = %d\ti = %d\n", tmp->arg->str, fd[i][0], fd[i][1], i);
-		printf("cmd = %s\tfdin = %d\tfdout = %d\ti = %d\n\n", tmp->arg->str, tmp->fdin, tmp->fdout, i);
+		if (tmp->fdin == 0)
+			tmp->fdin = previous;
+		printf("cmd = %s\tfd[0] = %d\tfd[1] = %d\n", tmp->arg->str, fd[0], fd[1]);
+		printf("cmd = %s\tfdin = %d\tfdout = %d\n\n", tmp->arg->str, tmp->fdin, tmp->fdout);
 		pid = fork();
 		if (pid < 0)
 			break ;
@@ -104,62 +101,35 @@ void	ft_pipe(t_cmd *cmd)
 			if (tmp->fdin != 0)
 			{
 				dup2(tmp->fdin, 0);
-				close(tmp->fdin);
+				if (tmp->fdin == previous)
+					close(tmp->fdin);
+				else
+					close(fd[0]);
 			}	
 			if (tmp->fdout != 1)
 			{
 				dup2(tmp->fdout, 1);
-				close(tmp->fdout);
+				if (tmp->fdout != fd[1])
+					close(tmp->fdout);
+				else
+					close(fd[1]);
 			}
-			if (i == 0)
-			{
-				close(fd[0][0]);
-				if (!tmp->next)
-					close(fd[0][1]);
-			}
-			else if (i == 1)
-			{
-				close(fd[1][0]);
-				if (!tmp->next)
-					close(fd[1][1]);
-			}
+			close(fd[0]);
+			if (!tmp->next)
+				close(fd[1]);
 			determine_exe_type(tmp);
 		}
-		else 
+		else
 		{
-			if (i == 0)
-			{
-				if (j == 0)
-					close(fd[0][1]);
-				else if (j > 0 && j != cmd_size - 1)
-				{
-					close(fd[1][0]);
-					close(fd[0][1]);
-				}
-				else if (j == cmd_size - 1)
-				{
-					close(fd[1][0]);
-					close(fd[0][1]);
-					close(fd[0][0]);
-				}
-			}
-			else if (i == 1)
-			{
-				if (j > 0 && j != cmd_size - 1)
-				{
-					close(fd[0][0]);
-					close(fd[1][1]);
-				}
-				else if (j == cmd_size - 1)
-				{
-					close(fd[0][0]);
-					close(fd[1][1]);
-					close(fd[1][0]); //et la //a voir si faut pas tout close ici
-				}
-			}
+			close(fd[1]);
+			printf("\nPREVIOUS = %d\n----->close previous\n", previous);
+			if (previous != 0)
+				close(previous);
+			tmp = tmp->next;
+			if (!tmp)
+				close(fd[0]);
 		}
-		j++;
-		tmp = tmp->next;
+		
 	}
 	if (pid < 0)
 		return ;
