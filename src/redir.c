@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/05 18:26:12 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/12 16:28:21 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	print_err(char *file, char *s)
 
 int		file_err(t_token *tmp)
 {
+	
 	while (tmp)
 	{
 		if ((tmp->type == rout || tmp->type == rdout || tmp->type == rin) && tmp->fd <= 0)
@@ -39,24 +40,29 @@ int		file_err(t_token *tmp)
 
 t_cmd	*redir(t_cmd *cmd)
 {
+	t_cmd	*temp;
 	t_token	*tmp;
 
-	tmp = cmd->redir;
-	while (tmp)
+	temp = cmd;
+	while (temp)
 	{
-		if (tmp->type == rout)
-			cmd->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		else if (tmp->type == rdout)
-			cmd->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		else if (tmp->type == rin)
-			cmd->fdin = open(tmp->next->str, O_RDONLY);
-		if (tmp->type == rout || tmp->type == rdout)
-			tmp->fd = cmd->fdout;
-		else if (tmp->type == rin)
-			tmp->fd = cmd->fdin;
-		tmp = tmp->next;
+		tmp = temp->redir;
+		while (tmp)
+		{
+			if (tmp->type == rout)
+				temp->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			else if (tmp->type == rdout)
+				temp->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			else if (tmp->type == rin)
+				temp->fdin = open(tmp->next->str, O_RDONLY);
+			if (tmp->type == rout || tmp->type == rdout)
+				tmp->fd = cmd->fdout;
+			else if (tmp->type == rin)
+				tmp->fd = cmd->fdin;
+			tmp = tmp->next;
+		}
+		file_err(tmp);
+		temp = temp->next;
 	}
-	tmp = cmd->redir;
-	file_err(tmp);
 	return (cmd);
 }

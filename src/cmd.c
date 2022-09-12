@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 16:42:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/04 16:31:40 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/12 16:20:39 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void	print_cmd(t_cmd *cmd)
 			printf("REDIR: ");
 			print_token(tmp->redir);
 		}
-		printf("fdin = %d\n", cmd->fdin);
-		printf("fdout = %d\n", cmd->fdout);
+		printf("fdin = %d\n", tmp->fdin);
+		printf("fdout = %d\n", tmp->fdout);
 		tmp = tmp->next;
 	}
 }

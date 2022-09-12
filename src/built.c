@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/08 16:52:45 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/12 17:02:58 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ void	exec_built(t_cmd *cmd)
 {
 	if (is_built(cmd) == 1)
 		ex_echo(cmd);
-	// else if (is_built(cmd) == 2)
-	// 	ex_cd(cmd);
+	else if (is_built(cmd) == 2)
+		ex_cd(cmd, handler(3, NULL, "HOME", NULL));
 	else if (is_built(cmd) == 3)
 		ex_pwd(cmd);
 	else if (is_built(cmd) == 4)
@@ -74,15 +74,23 @@ void	ex_echo(t_cmd *cmd)
 		write(cmd->fdout, "\n", 1);
 }
 
-// void	ex_cd(t_cmd *cmd)
-// {
-// 	char	buf[4096];
-// 	char	s;
+void	ex_cd(t_cmd *cmd, t_env *env)
+{
+	// char	buf[4096];
+	char	*s;
 
-// 	if (cmd->arg->next)
-// 		s = cmd->arg->next->str;
-// 	if ()
-// }
+	if (cmd->arg->next)
+		s = cmd->arg->next->str;
+	if (!env && (!s || s[0] == '~'))
+		return (print_err(NULL, "cd : HOME not set\n"));
+	if (env && (!s || !ft_strcmp(s, "~")))
+		s = ft_strdup(env->content);
+	if (env && s && s[0] == '~' && s[1])
+	{
+		s = ft_strjoin(env->content, &s[1]);
+		printf("|%s|\n", s);
+	}
+}
 
 void	ex_pwd(t_cmd *cmd)
 {

@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/08 16:26:42 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/12 17:02:28 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,20 +141,21 @@ t_cmd	*pars_err(t_cmd *cmd);
 int		is_built(t_cmd *cmd);
 void	exec_built(t_cmd *cmd);
 void	ex_echo(t_cmd *cmd);
+void	ex_cd(t_cmd *cmd, t_env *env);
 void	ex_pwd(t_cmd *cmd);
 void	ex_it(t_cmd *cmd);
-
-/*BUILT_UTILS*/
-int				ft_isspace(char c);
-int				only_n(char *s);
-long long int   exit_atoi(char *s, int *err);
-long long int   exit_atoi_plus(char *s, int i, unsigned long long int n, int neg, int *err);
 
 /*ENV_BUILT*/
 int		get_equal(char *s);
 void	ex_port(t_cmd *cmd);
 void	ex_unset(t_cmd *cmd);
 void	ex_env(t_cmd *cmd);
+
+/*BUILT_UTILS*/
+int 			ft_isspace(char c);
+int				only_n(char *s);
+long long int	exit_atoi(char *s, int *err);
+long long int	exit_atoi_plus(char *s, int i, unsigned long long int nb, int neg, int *err);
 
 /*FREE*/
 void	free_token(t_token *token);

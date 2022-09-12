@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/06 18:10:36 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/12 17:01:27 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,8 @@ void	create_cmd(t_token *token)
 	}
 	if (!temp || !pars_err(temp))
 		return ;
-	// print_cmd(redir(temp));
+	// redir(temp);
+	// print_cmd(temp);
 	// if (is_heredoc(temp))
 	parent(redir(temp));
 }
