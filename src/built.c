@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/08 16:52:45 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 18:06:32 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,13 @@ void	exec_built(t_cmd *cmd)
 	if (is_built(cmd) == 1)
 		ex_echo(cmd);
 	// else if (is_built(cmd) == 2)
-	// 	ex_cd(cmd);
+		// ex_cd(cmd);
 	else if (is_built(cmd) == 3)
 		ex_pwd(cmd);
-	else if (is_built(cmd) == 4)
-		ex_port(cmd);
-	else if (is_built(cmd) == 5)
-		ex_unset(cmd);
+	// else if (is_built(cmd) == 4)
+		// ex_port(cmd);
+	// else if (is_built(cmd) == 5)
+		// ex_unset(cmd);
 	else if (is_built(cmd) == 6)
 		ex_env(cmd);
 	// else if (is_built(cmd) == 7)
@@ -74,7 +74,7 @@ void	ex_echo(t_cmd *cmd)
 	n = 0;
 	while (arg)
 	{
-		if (arg->str && !ft_strncmp(arg->str, "-n", 2) && only_n(&arg->str[1]))
+		if (arg && arg->str && !ft_strncmp(arg->str, "-n", 2) && only_n(&arg->str[1]))
 			n = 1;
 		else
 		{
@@ -99,18 +99,52 @@ void	ex_pwd(t_cmd *cmd)
 	write(cmd->fdout, "\n", 1);
 }
 
-void	ex_it(t_cmd *cmd)
+int		get_equal(char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	while (s[i])
+	{
+		if (s[i] == '=')
+			return (i);
+		i++;
+	}
+	return (0);
+}
+
+void	ex_port(t_cmd *cmd)//PAS FINIT
 {
 	t_token	*arg;
-	int		exit_status;
+	char	*name;
+	char	*content;
 
-	if (!cmd->arg->next)
-		exit_free(cmd, NULL, 'c', 0);
-	if (cmd->arg->next->next)
+	printf("HOLA");
+	if (cmd->arg->next)
+		arg = cmd->arg->next;
+	else
+		ex_env(cmd);
+	if (get_equal(arg->str) < 1)
+		return ;
+	name = ft_substr(arg->str, 0, get_equal(arg->str));
+	content = ft_substr(arg->str, get_equal(arg->str), ft_strlen(arg->str));
+	printf("%s=%s\n", name, content);
+	// handler(3, NULL, name, content);
+}
+
+void	ex_env(t_cmd *cmd)
+{
+	t_env	*env;
+
+	env = handler(3, NULL, NULL, NULL);
+	while (env)
 	{
-		free_cmd(cmd);
+		ft_putstr_fd(env->name, cmd->fdout);
+		write(cmd->fdout, "=", 1);
+		ft_putstr_fd(env->content, cmd->fdout);
+		write(cmd->fdout, "\n", 1);
+		env = env->next;
 	}
-	arg = cmd->arg->next;
-	exit_status = get_exit_code(arg);
-
 }

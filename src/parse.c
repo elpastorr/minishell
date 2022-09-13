@@ -6,7 +6,11 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/09/13 17:53:52 by eleotard         ###   ########.fr       */
+=======
+/*   Updated: 2022/09/06 18:10:36 by elpastor         ###   ########.fr       */
+>>>>>>> origin/elpastor
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,11 +140,16 @@ void	create_cmd(t_token *token)
 	}
 	if (!temp || !pars_err(temp))
 		return ;
+<<<<<<< HEAD
 	print_cmd(temp);
 	ft_putstr_fd("\n\n", 1);
 	// if (is_heredoc(temp))
 		// heredoc(temp);
 	print_cmd(temp);
 	ft_putstr_fd("\n\n", 1);
+=======
+	// print_cmd(redir(temp));
+	// if (is_heredoc(temp))
+>>>>>>> origin/elpastor
 	parent(redir(temp));
 }
