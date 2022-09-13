@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/13 18:08:17 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/13 18:17:59 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,6 +299,38 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 	else
 		exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
 }
+
+/*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)
+{
+	t_cmd	*tmp;
+	int		i;
+	int		fd[nb_of_pipes][2];
+
+	tmp = cmd;
+	i = 0;
+	while (i < nb_of_pipes)
+	{	
+		if (pipe(fd[i]) < 0)
+    	    return (NULL);
+		i++;
+	}
+    cmd->pid = fork();
+    if (cmd->pid < 0) //Erreur
+        return (NULL);
+	else if (cmd->pid == 0) //ENFANT
+	{
+		while (tmp)
+		{
+			if (is_exe(cmd))
+			{
+				dup2()
+			}
+		}
+	}
+    	child(cmd, fd);
+	else if (cmd->pid > 0) // ligne qui peut etre supp
+		waitpid(0, 0 ,0);
+}*/
 
 void	*parent(t_cmd *cmd)
 {

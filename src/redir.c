@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 17:35:37 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/13 18:13:13 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,30 +39,29 @@ int		file_err(t_token *tmp)
 
 t_cmd	*redir(t_cmd *cmd)
 {
-	t_token	*cur;
-	t_cmd	*cmd_tmp;
+	t_cmd	*temp;
+	t_token	*tmp;
 
-	cmd_tmp = cmd;
-	while (cmd)
+	temp = cmd;
+	while (temp)
 	{
-		cur = cmd->redir;
-		while (cur)
+		tmp = temp->redir;
+		while (tmp)
 		{
-			if (cur->type == rout) //>
-				cmd->fdout = open(cur->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			else if (cur->type == rdout) //>>
-				cmd->fdout = open(cur->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			else if (cur->type == rin) //<
-				cmd->fdin = open(cur->next->str, O_RDONLY);
-			printf("cmd = %s\tcmd_.fdin = %d\n", cmd->arg->str, cmd->fdin);
-			if (cur->type == rout || cur->type == rdout)
-				cur->fd = cmd->fdout;
-			else if (cur->type == rin)
-				cur->fd = cmd->fdin;
-			file_err(cur);
-			cur = cur->next;
+			if (tmp->type == rout)
+				temp->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			else if (tmp->type == rdout)
+				temp->fdout = open(tmp->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			else if (tmp->type == rin)
+				temp->fdin = open(tmp->next->str, O_RDONLY);
+			if (tmp->type == rout || tmp->type == rdout)
+				tmp->fd = cmd->fdout;
+			else if (tmp->type == rin)
+				tmp->fd = cmd->fdin;
+			tmp = tmp->next;
 		}
-		cmd = cmd->next;
+		file_err(tmp);
+		temp = temp->next;
 	}
-	return (cmd_tmp);
+	return (cmd);
 }

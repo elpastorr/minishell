@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:06:32 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/13 18:15:46 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,32 +37,19 @@ void	exec_built(t_cmd *cmd)
 {
 	if (is_built(cmd) == 1)
 		ex_echo(cmd);
-	// else if (is_built(cmd) == 2)
-		// ex_cd(cmd);
+	else if (is_built(cmd) == 2)
+		ex_cd(cmd, handler(3, NULL, "HOME", NULL));
 	else if (is_built(cmd) == 3)
 		ex_pwd(cmd);
-	// else if (is_built(cmd) == 4)
-		// ex_port(cmd);
-	// else if (is_built(cmd) == 5)
-		// ex_unset(cmd);
+	else if (is_built(cmd) == 4)
+		ex_port(cmd);
+	else if (is_built(cmd) == 5)
+		ex_unset(cmd);
 	else if (is_built(cmd) == 6)
 		ex_env(cmd);
-	// else if (is_built(cmd) == 7)
-	// 	ex_it(cmd);
-}
-
-int	only_n(char *s)
-{
-	int	i;
-
-	i = 0;
-	while (s[i])
-	{
-		if (s[i] != 'n')
-			return (0);
-		i++;
-	}
-	return (1);
+	else if (is_built(cmd) == 7)
+		ex_it(cmd);
+	// exit_free(cmd, NULL, 'c', 0);
 }
 
 void	ex_echo(t_cmd *cmd)
@@ -74,7 +61,7 @@ void	ex_echo(t_cmd *cmd)
 	n = 0;
 	while (arg)
 	{
-		if (arg && arg->str && !ft_strncmp(arg->str, "-n", 2) && only_n(&arg->str[1]))
+		if (arg->str && !ft_strncmp(arg->str, "-n", 2) && only_n(&arg->str[1]))
 			n = 1;
 		else
 		{
@@ -88,6 +75,35 @@ void	ex_echo(t_cmd *cmd)
 		write(cmd->fdout, "\n", 1);
 }
 
+void	ex_cd(t_cmd *cmd, t_env *env)
+{
+	char	buf[4096];
+	char	*s;
+	int		f;
+
+	f = 0;
+	if (cmd->arg->next)
+		s = cmd->arg->next->str;
+	if (!env && (!s || s[0] == '~'))
+		return (print_err(NULL, "cd : HOME not set\n"));
+	if (env && (!s || !ft_strcmp(s, "~")))
+	{
+		s = ft_strdup(env->content);
+		f = 1;
+	}
+	if (env && s && s[0] == '~' && s[1])
+	{
+		s = ft_strjoin(env->content, &s[1]);
+		f = 1;
+	}
+	if (s && chdir(s) == -1)
+		printf("Minishell: cd: %s: Not a directory\n", s);
+	else
+		handler(3, NULL, "PWD", getcwd(buf, 4096));
+	if (f)
+		free(s);
+}
+
 void	ex_pwd(t_cmd *cmd)
 {
 	char	*s;
@@ -99,52 +115,24 @@ void	ex_pwd(t_cmd *cmd)
 	write(cmd->fdout, "\n", 1);
 }
 
-int		get_equal(char *s)
+void	ex_it(t_cmd *cmd)
 {
-	int	i;
+	t_token			*arg;
+	long long int	exit_status;
+	int				atoi_err;
 
-	i = 0;
-	if (!s)
-		return (0);
-	while (s[i])
+	if (!cmd->arg->next)
+		exit_free(cmd, NULL, 'c', 0);
+	if (cmd->arg->next->next)
+		return (ctfree(cmd, "Minishell: exit: too many arguments", 'c', 1));
+	arg = cmd->arg->next;
+	atoi_err = 0;
+	exit_status = exit_atoi(arg->str, &atoi_err);
+	if (atoi_err == 0)
 	{
-		if (s[i] == '=')
-			return (i);
-		i++;
+		// handler(exit_status, NULL, "?", NULL);
+		exit_free(cmd, "exit", 'c', exit_status);
 	}
-	return (0);
-}
-
-void	ex_port(t_cmd *cmd)//PAS FINIT
-{
-	t_token	*arg;
-	char	*name;
-	char	*content;
-
-	printf("HOLA");
-	if (cmd->arg->next)
-		arg = cmd->arg->next;
-	else
-		ex_env(cmd);
-	if (get_equal(arg->str) < 1)
-		return ;
-	name = ft_substr(arg->str, 0, get_equal(arg->str));
-	content = ft_substr(arg->str, get_equal(arg->str), ft_strlen(arg->str));
-	printf("%s=%s\n", name, content);
-	// handler(3, NULL, name, content);
-}
-
-void	ex_env(t_cmd *cmd)
-{
-	t_env	*env;
-
-	env = handler(3, NULL, NULL, NULL);
-	while (env)
-	{
-		ft_putstr_fd(env->name, cmd->fdout);
-		write(cmd->fdout, "=", 1);
-		ft_putstr_fd(env->content, cmd->fdout);
-		write(cmd->fdout, "\n", 1);
-		env = env->next;
-	}
+	print_err("Minishell: exit: %s: numeric argument required\n", arg->str);
+	exit_free(cmd, NULL, 'c', atoi_err);
 }

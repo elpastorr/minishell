@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:14:53 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/15 16:15:42 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 15:26:11 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*expand_special(char *tmp, char *util, int *j)
 	else
 		util = ft_strdup("Minishell");
 	(*j)++;
-	return (util);
+ 	return (util);
 }
 
 char	*expand_extra(char *tmp, char *util, int *j, int i)
@@ -66,8 +66,6 @@ char	*expend_words(char *s, int i)
 	else
 		util = expand_extra(tmp, NULL, &j, i);
 	tmp = replace_str(tmp, util, j, i);
-	if (util)
-		free(util);
 	if (!tmp)
 		return (NULL);
 	return (del_unused_quot(tmp));
@@ -77,11 +75,10 @@ char	*expend_words(char *s, int i)
 char	*replace_str(char *str, char *new, int j, int i)
 {
 	char	*tmp;
-	int		k;
-	int		l;
-	int		m;
 
-	tmp = ft_newstr(ft_strlen(str) - (i - j) + ft_strlen(new));
+	tmp = ft_strndup(str, i);
+	tmp = ft_strjoin_free(tmp, new, 2);
+	tmp = ft_strjoin_free(tmp, &str[j], 0);
 	if (!tmp)
 	{
 		if (new)
@@ -89,15 +86,6 @@ char	*replace_str(char *str, char *new, int j, int i)
 		free(str);
 		return (NULL);
 	}
-	k = 0;
-	l = 0;
-	while (str && str[l] && l < j)
-		tmp[k++] = str[l++];
-	m = 0;
-	while (new && new[m])
-		tmp[k++] = new [m++];
-	l += i - j;
-	ft_strcat(&tmp[k], &str[l]);
 	if (str)
 		free(str);
 	return (tmp);

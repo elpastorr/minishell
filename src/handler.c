@@ -6,7 +6,11 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:33:29 by elpastor          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/09/13 18:08:54 by eleotard         ###   ########.fr       */
+=======
+/*   Updated: 2022/09/13 14:01:09 by elpastor         ###   ########.fr       */
+>>>>>>> elpastor
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +129,6 @@ t_env	*handler(int opt, char **env, char *name, char *content)
 	if (name && !ft_strcmp(name, "?"))
 	{
 		exit_status = opt;
-		free(name);
 		return (NULL);
 	}
 	if (content && !ft_strcmp(content, "?"))

@@ -57,6 +57,7 @@ SI YA DES ARGS:
     la commande prend les arg en entree 
 SI YA PAS D'ARGS:
     la commande prend en entree un truc qui est genre "< file" (si celui-ci existe)
+<<<<<<< HEAD
 
 Si ya un melange pipes et << < >> >
     Les redirections sont prioritaires sur les pipes, dans ce caas la faut pas oublier de les close
@@ -66,3 +67,6 @@ cmd.c : changer le print cmd incorrect avec tmp->fdin
 
 SIGPIPE:
     catch le sigpipe, free et exit
+=======
+    test
+>>>>>>> elpastor
