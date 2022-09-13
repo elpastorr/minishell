@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/06 16:47:05 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 14:22:55 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ char	*read_heredoc(char *s, char *tmp)
 	{
 		if (s[i] == '$' && !quot_status(s, i) && (ft_isalnum(s[i + 1])
 			|| s[i + 1] == '_' || s[i + 1] == '?' || s[i + 1] == '$'))
-		s = expend_words(s, i);
+			s = expend_words(s, i);
 		i++;
 	}
 	return (heredoc_strcat(tmp, s));

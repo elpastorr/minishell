@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:07:52 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/15 16:47:43 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 15:47:28 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ t_cmd	*init_cmd(t_cmd *next, t_token *arg, t_token *redir)
 	data->fdin = 0;
 	data->fdout = 1;
 	data->pid = 0;
-	data->exit = 0;
 	return (data);
 }
 

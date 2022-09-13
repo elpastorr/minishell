@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/12 18:19:58 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 15:52:53 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ void	exec_built(t_cmd *cmd)
 		ex_env(cmd);
 	else if (is_built(cmd) == 7)
 		ex_it(cmd);
+	// exit_free(cmd, NULL, 'c', 0);
 }
 
 void	ex_echo(t_cmd *cmd)
@@ -78,9 +79,9 @@ void	ex_cd(t_cmd *cmd, t_env *env)
 {
 	char	buf[4096];
 	char	*s;
-	int		free;
+	int		f;
 
-	free = 0;
+	f = 0;
 	if (cmd->arg->next)
 		s = cmd->arg->next->str;
 	if (!env && (!s || s[0] == '~'))
@@ -88,12 +89,12 @@ void	ex_cd(t_cmd *cmd, t_env *env)
 	if (env && (!s || !ft_strcmp(s, "~")))
 	{
 		s = ft_strdup(env->content);
-		free = 1;
+		f = 1;
 	}
 	if (env && s && s[0] == '~' && s[1])
 	{
 		s = ft_strjoin(env->content, &s[1]);
-		free = 1;
+		f = 1;
 	}
 	if (s && chdir(s) == -1)
 		printf("Minishell: cd: %s: Not a directory\n", s);

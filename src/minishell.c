@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:48:46 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/06 18:11:13 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 15:34:05 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,8 @@ int	main(int ac, char **av, char **env)
 		printf("env NULL exit\n");
 		return (1);
 	}
-	
 	handler(0, env, NULL, NULL);
 	myenv = handler(3, NULL, "SHLVL", NULL);
-	// print_env(myenv);
 	if (!myenv)
 		myenv = handler(3, NULL, "SHLVL", "1");
 	s = ft_itoa(ft_atoi(myenv->content) + 1);

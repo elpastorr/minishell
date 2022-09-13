@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/12 17:02:28 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 15:47:33 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,6 @@ typedef struct s_cmd
 	int				fdin;
 	int				fdout;
 	int				pid;
-	int				exit;
 	struct s_cmd	*next;
 }	t_cmd;
 
@@ -181,6 +180,9 @@ int		find_nb_of_args(t_cmd *cmd);
 
 void	exec(t_cmd *cmd, const char *pathname);
 void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
+void	ft_pipe(t_cmd *cmd);
+int	get_cmd_size(t_cmd *cmd);
+
 
 /*SIGNALS*/
 void	catch_signals(void);

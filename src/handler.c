@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:33:29 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/08 16:16:26 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/13 14:01:09 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,6 @@ t_env	*handler(int opt, char **env, char *name, char *content)
 	if (name && !ft_strcmp(name, "?"))
 	{
 		exit_status = opt;
-		free(name);
 		return (NULL);
 	}
 	if (content && !ft_strcmp(content, "?"))
