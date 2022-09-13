@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/13 17:38:00 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/13 17:55:08 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@
 int		is_exe(t_cmd *cmd)
 {
 	char	*path;
-	
+
 	if (is_built(cmd))
 		return (1);
 	else if (!is_built(cmd) && !find_slash(cmd))
@@ -214,7 +214,7 @@ char	**get_exec_args(t_cmd *cmd, int nb_of_arg)
 	return (argv);	
 }
 
-int	find_slash(t_cmd *cmd)
+int		find_slash(t_cmd *cmd)
 {
 	t_token	*tmp;
 	int		i;
