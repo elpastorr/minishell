@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/12 21:50:59 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/13 17:38:00 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -302,6 +302,8 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 
 void	*parent(t_cmd *cmd)
 {
+	//if (hdoc)
+	
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
     else if (get_cmd_size(cmd) > 1) 
