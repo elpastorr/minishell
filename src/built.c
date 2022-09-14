@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:15:46 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:36:36 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	exec_built(t_cmd *cmd)
 		ex_env(cmd);
 	else if (is_built(cmd) == 7)
 		ex_it(cmd);
-	// exit_free(cmd, NULL, 'c', 0);
+	exit_free(cmd, NULL, 'c', 0);
 }
 
 void	ex_echo(t_cmd *cmd)
@@ -130,7 +130,7 @@ void	ex_it(t_cmd *cmd)
 	exit_status = exit_atoi(arg->str, &atoi_err);
 	if (atoi_err == 0)
 	{
-		// handler(exit_status, NULL, "?", NULL);
+		handler(exit_status, NULL, "?", NULL);
 		exit_free(cmd, "exit", 'c', exit_status);
 	}
 	print_err("Minishell: exit: %s: numeric argument required\n", arg->str);

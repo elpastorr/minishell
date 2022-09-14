@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:22:43 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/14 14:48:22 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,8 +106,6 @@ void	tokenizing(t_token *token)
 		}
 		tmp = tmp->next;
 	}
-	// print_token(token);
-	// ft_putstr_fd("\n\n", 1);
 	create_cmd(token);
 }
 
@@ -136,11 +134,8 @@ void	create_cmd(t_token *token)
 	}
 	if (!temp || !pars_err(temp))
 		return ;
-	print_cmd(temp);
-	ft_putstr_fd("\n\n", 1);
 	// if (is_heredoc(temp))
 		// heredoc(temp);
-	print_cmd(temp);
-	ft_putstr_fd("\n\n", 1);
+	// print_cmd(temp);
 	parent(redir(temp));
 }

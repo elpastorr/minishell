@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/13 18:23:25 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/14 17:45:05 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,5 +203,8 @@ char	*ft_strjoin_free(char *s1, char *s2, int opt);
 /*TEST PRINTS*/
 void	print_tabtab(char **tab);
 void	print_err(char *file, char *s);
+
+int		get_exit(void);
+void	reset_default_signals(void);
 
 #endif

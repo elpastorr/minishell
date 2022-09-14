@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:24:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/10 17:28:07 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/14 15:59:55 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ char	*ft_newstr(int size)
 {
 	int		i;
 	char	*s;
-	
+
 	i = 0;
 	s = (char *)malloc(size + 1);
 	while (s[i])

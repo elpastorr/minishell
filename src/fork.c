@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/13 18:17:59 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/14 17:36:50 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,6 +253,7 @@ void	exec(t_cmd *cmd, const char *pathname)
 	char	**env;
 	int		nb_of_arg;
 	
+	reset_default_signals();
 	env = get_exec_env();
 	if (!env)
 		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
@@ -266,7 +267,7 @@ void	exec(t_cmd *cmd, const char *pathname)
 		if (!strcmp(pathname, argv[0]))
 			pathname = argv[0];
 		ctfree(cmd, NULL, 'c', 4);
-		printf("\n///////////////////3///////////// \n");
+		// printf("\n///////////////////3///////////// \n");
 		if (execve(pathname, argv, env) == -1)
 			exit(4);
 	}
@@ -279,13 +280,13 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 	char	*path;
 
 	if (is_built(cmd))
-		printf("C'est un built-in perso\n");
-    else if (!is_built(cmd) && !find_slash(cmd))
+		exec_built(cmd);
+	else if (!is_built(cmd) && !find_slash(cmd))
     {
         path = look_for_path(cmd);
         if (!path)
             exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
-		printf("\n/////////1//////////\n");
+		// printf("\n/////////1//////////\n");
 		exec(cmd, path);
     }
 	else if (!is_built(cmd) && find_slash(cmd))
@@ -334,19 +335,20 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 
 void	*parent(t_cmd *cmd)
 {
+	int	exit;
 	//if (hdoc)
 	
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
-    else if (get_cmd_size(cmd) > 1) 
+	else if (get_cmd_size(cmd) > 1) 
 	{
-		printf("\n/////////0//////////\n");
-		printf("Il ya des pipes\n");
+		// printf("\n/////////0//////////\n");
+		// printf("Il ya des pipes\n");
 		ft_pipe(cmd);
 	}
-    else
-    {
-        printf("Il n'y a pas de pipes\n");
+	else
+	{
+		// printf("Il n'y a pas de pipes\n");
 		cmd->pid = fork();
 		if (cmd->pid < 0)
 			return (NULL);
@@ -354,6 +356,7 @@ void	*parent(t_cmd *cmd)
 			determine_exe_type(cmd);
 		else
 			wait(NULL);
-    }
-    return (ctfree(cmd, NULL, 'c', 4), NULL);
+	}
+	exit = get_exit();
+	return (ctfree(cmd, NULL, 'c', exit), NULL);
 }

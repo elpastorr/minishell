@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:13:58 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/14 19:02:19 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,3 +113,10 @@ char	*heredoc(t_cmd *cmd)
 		tmp = ft_strdup("");
 	return (tmp);
 }
+
+// int	fd_heredoc(char *s)
+// {
+// 	int	fd;
+
+// 	fd = open("heredoc_file", );
+// }

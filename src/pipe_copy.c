@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_copy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:20:54 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/14 17:44:52 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	get_cmd_size(t_cmd *cmd)
 		tmp = tmp->next;
 		i++;
 	}
-	printf("SIZE CMD = %d\n", i);
+	// printf("SIZE CMD = %d\n", i);
 	return (i);
 }
 
@@ -165,6 +165,9 @@ void	ft_pipe(t_cmd *cmd)
 			tmp->fdin = previous;
 		printf("cmd = %s\tfd[0] = %d\tfd[1] = %d\n", tmp->arg->str, fd[0], fd[1]);
 		printf("cmd = %s\tfdin = %d\tfdout = %d\n\n", tmp->arg->str, tmp->fdin, tmp->fdout);
+		// if (is_built(cmd) == 2 || is_built(cmd) == 7)
+		//si cest exit ou cd
+		//tu 
 		tmp->pid = fork();
 		if (tmp->pid < 0)
 			break ;
