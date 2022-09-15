@@ -79,3 +79,5 @@ essayer de merge a chaque fois quun truc importanyt est fait
 gerer les built in differement en multi pipes
 gerer les commandes solo et signaux
 
+cat < truc auiexste pas 
+    imprimer file not found

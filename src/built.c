@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/14 18:58:53 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/15 20:16:33 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	exec_built(t_cmd *cmd)
 		ex_env(cmd);
 	else if (is_built(cmd) == 7)
 		ex_it(cmd);
-	// exit_free(cmd, NULL, 'c', 0);
 }
 
 void	ex_echo(t_cmd *cmd)
@@ -72,7 +71,11 @@ void	ex_echo(t_cmd *cmd)
 		arg = arg->next;
 	}
 	if (!n)
-		write(1, "\n", 1);
+		write(cmd->fdout, "\n", 1);
+	if (cmd->fdout != 1)
+		close(cmd->fdout);
+	//dup2(0, STDIN_FILENO);
+	//dup2(1, STDOUT_FILENO);
 }
 
 void	ex_cd(t_cmd *cmd, t_env *env)
