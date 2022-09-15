@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/14 19:02:19 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/15 15:58:23 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,29 +94,20 @@ char	*heredoc_extra(t_token *redir, char *tmp, int ret)
 	return (tmp);
 }
 
-char	*heredoc(t_cmd *cmd)
+int	fd_heredoc(char *s)
 {
-	char	*tmp;
-	t_token	*redir;
+	int		fd;
+	char	*file_name;
 
-	if (!cmd || !cmd->redir)
-		return (NULL);
-	tmp = NULL;
-	redir = cmd->redir;
-	while (redir)
+	fd = -1;
+	file_name = ft_strdup("heredoc_file0");
+	while (fd == -1)
 	{
-		if (redir->type == fin)
-			tmp = heredoc_extra(redir, tmp, 0);
-		redir = redir->next;
+		fd = open(file_name, O_CREAT | O_RDWR);
+		if (fd != -1)
+			write(fd, s, ft_strlen(s));
+		else
+			file_name[12]++;
 	}
-	if (!tmp)
-		tmp = ft_strdup("");
-	return (tmp);
+	return (fd);
 }
-
-// int	fd_heredoc(char *s)
-// {
-// 	int	fd;
-
-// 	fd = open("heredoc_file", );
-// }
