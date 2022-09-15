@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/15 16:41:37 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/15 17:46:31 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	fd_heredoc(char *s)
 	char	*file_name;
 
 	fd = -1;
-	file_name = ft_strdup("/tmp/heredoc_file0");
+	file_name = ft_strdup("/tmp/heredoc_file0.txt");
 	while (fd == -1)
 	{
 		fd = open(file_name, O_CREAT | O_RDWR);

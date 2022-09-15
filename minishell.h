@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/08 18:34:49 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/15 15:58:15 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,12 @@ int		is_heredoc(t_cmd *cmd);
 char	*heredoc_strcat(char *tmp, char *s);
 char	*read_heredoc(char *s, char *tmp);
 char	*heredoc_extra(t_token *redir, char *tmp, int ret);
-char	*heredoc(t_cmd *cmd);
+int		fd_heredoc(char *s);
 
 /*REDIR*/
 void	print_err(char *file, char *s);
 int		file_err(t_token *tmp);
+int		heredoc(t_cmd *cmd);
 t_cmd	*redir(t_cmd *cmd);
 
 /*TOKEN*/
