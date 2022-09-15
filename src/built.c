@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:15:46 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/14 18:58:53 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	ex_echo(t_cmd *cmd)
 		arg = arg->next;
 	}
 	if (!n)
-		write(cmd->fdout, "\n", 1);
+		write(1, "\n", 1);
 }
 
 void	ex_cd(t_cmd *cmd, t_env *env)

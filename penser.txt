@@ -57,7 +57,6 @@ SI YA DES ARGS:
     la commande prend les arg en entree 
 SI YA PAS D'ARGS:
     la commande prend en entree un truc qui est genre "< file" (si celui-ci existe)
-<<<<<<< HEAD
 
 Si ya un melange pipes et << < >> >
     Les redirections sont prioritaires sur les pipes, dans ce caas la faut pas oublier de les close
@@ -67,6 +66,16 @@ cmd.c : changer le print cmd incorrect avec tmp->fdin
 
 SIGPIPE:
     catch le sigpipe, free et exit
-=======
-    test
->>>>>>> elpastor
+
+git pull souvent
+pour merge
+pull
+push
+switch main
+git merge elsie
+apres elio le fait Aussi
+essayer de merge a chaque fois quun truc importanyt est fait
+
+gerer les built in differement en multi pipes
+gerer les commandes solo et signaux
+

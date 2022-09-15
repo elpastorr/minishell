@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:13:13 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/15 14:32:57 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ t_cmd	*redir(t_cmd *cmd)
 			else if (tmp->type == rin)
 				temp->fdin = open(tmp->next->str, O_RDONLY);
 			if (tmp->type == rout || tmp->type == rdout)
-				tmp->fd = cmd->fdout;
+				tmp->fd = temp->fdout;
 			else if (tmp->type == rin)
-				tmp->fd = cmd->fdin;
+				tmp->fd = temp->fdin;
 			tmp = tmp->next;
 		}
 		file_err(tmp);
