@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/15 17:09:23 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/16 14:46:21 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,5 +175,9 @@ char	*join(char *base, char *read);
 
 /*TEST PRINTS*/
 void	print_tabtab(char **tab);
+
+void	ft_multi_pipe(t_cmd *cmd);
+
+
 
 #endif

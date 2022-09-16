@@ -82,4 +82,4 @@ gerer les commandes solo et signaux
 cat < truc auiexste pas 
     imprimer file not found
 
-git add -u 
+git add -u pour ajouter que les trucs modified

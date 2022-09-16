@@ -6,11 +6,13 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/15 20:18:41 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/16 14:47:17 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	ft_multi_pipe(t_cmd *cmd);
 
 int		is_exe(t_cmd *cmd)
 {
@@ -258,7 +260,7 @@ void	*parent(t_cmd *cmd)
 	else
 	{
 		if (get_cmd_size(cmd) > 1) 
-			ft_pipe(cmd);
+			ft_multi_pipe(cmd);
 		else
 		{
 			printf("Commande sans pipe\n");
