@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/15 15:27:05 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/16 18:32:52 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		is_exe(t_cmd *cmd)
+void	ft_multi_pipe(t_cmd *cmd);
+
+int	is_exe(t_cmd *cmd)
 {
 	char	*path;
 
@@ -40,50 +42,49 @@ char	*find_path(t_cmd *cmd, char **tab_of_paths)
 	int		i;
 	char	*tmp;
 	char	*cmd_path;
-	
+
 	i = 0;
 	tmp = join("/", cmd->arg->str);
-		if (!tmp)
-			return (NULL);
+	if (!tmp)
+		return (NULL);
 	while (tab_of_paths[i])
 	{
 		cmd_path = join(tab_of_paths[i], tmp);
-		if(!cmd_path)
+		if (!cmd_path)
 			return (free(tmp), NULL);
 		if (access(cmd_path, X_OK) == 0)
 			return (free(tmp), cmd_path);
 		free(cmd_path);
 		cmd_path = NULL;
 		i++;
-	} 
+	}
 	return (free(tmp), NULL);
 }
 
 char	*look_for_path(t_cmd *cmd)
 {
 	t_env	*whole_path;
-    char	**tab_of_paths;
+	char	**tab_of_paths;
 	char	*cmd_path;
-	
+
 	whole_path = handler(3, NULL, "PATH", NULL);
 	//printf("ligne entiere de chemins = [%s]\n", whole_path->content);
 	tab_of_paths = ft_split(whole_path->content, ':');
 	if (!tab_of_paths)
-		return (ctfree(cmd, "ERREUR MALLOC EXEC PATH", 'c', -1), NULL);
+		return (ctfree(cmd, "ERREUR MALLOC EXEC PATH", 'c', 1), NULL);
 	cmd_path = find_path(cmd, tab_of_paths);
 	if (!cmd_path)
-		return(free_tabtab(tab_of_paths));
+		return (free_tabtab(tab_of_paths));
 	free_tabtab(tab_of_paths);
-    return (cmd_path);
+	return (cmd_path);
 }
-
 
 char	**create_env_tab(t_env *env, int nb_of_lines)
 {
 	int		i;
 	char	*tmp;
 	char	**env_tab;
-	
+
 	env_tab = malloc(sizeof(char *) * (nb_of_lines + 1));
 	if (!env_tab)
 		return (NULL);
@@ -96,7 +97,7 @@ char	**create_env_tab(t_env *env, int nb_of_lines)
 			return (free_tabtab(env_tab), NULL);
 		env_tab[i] = join(tmp, env->content);
 		if (!env_tab[i])
-			return (free_tabtab(env_tab), NULL);	
+			return (free_tabtab(env_tab), NULL);
 		free(tmp);
 		tmp = NULL;
 		env = env->next;
@@ -186,10 +187,10 @@ void	exec(t_cmd *cmd, const char *pathname)
 	char	**argv;
 	char	**env;
 	int		nb_of_arg;
-	
+
 	env = get_exec_env();
 	if (!env)
-		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
+		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 1);
 	nb_of_arg = find_nb_of_args(cmd);
 	if (nb_of_arg >= 1)
 	{
@@ -198,9 +199,9 @@ void	exec(t_cmd *cmd, const char *pathname)
 			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE\n");
 		if (!strcmp(pathname, argv[0]))
 			pathname = argv[0];
-		ctfree(cmd, NULL, 'c', 4);
+		ctfree(cmd, NULL, 'c', 0);
 		if (execve(pathname, argv, env) == -1)
-			exit(4);
+			exit(1);
 	}
 	else
 		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE\n");
@@ -212,29 +213,32 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 
 	if (is_built(cmd))
 		exec_built(cmd);
-    else if (!is_built(cmd) && !find_slash(cmd))
-    {
-        path = look_for_path(cmd);
-        if (!path)
-            exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
+	else if (!is_built(cmd) && !find_slash(cmd))
+	{
+		path = look_for_path(cmd);
+		if (!path)
+			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 127);
 		exec(cmd, path);
-    }
+	}
 	else if (!is_built(cmd) && find_slash(cmd))
 	{
 		if (access(cmd->arg->str, X_OK) == -1)
-			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
+			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 127);
 		exec(cmd, cmd->arg->str);
 	}
 	else
-		exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
+		exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 127);
 }
 
 void	single_cmd_handler(t_cmd *cmd)
 {
-	t_token *cur;
+	t_token	*cur;
 
 	if (cmd->fdin != 0)
+	{
 		dup2(cmd->fdin, 0);
+		close(cmd->fdin);
+	}
 	if (cmd->fdout != 1)
 		dup2(cmd->fdout, 1);
 	cur = cmd->redir;
@@ -249,16 +253,14 @@ void	single_cmd_handler(t_cmd *cmd)
 
 void	*parent(t_cmd *cmd)
 {
-	//if (hdoc)
-	
 	if (!is_exe(cmd))
-		return (ctfree(cmd, NULL, 'c', 4), NULL);
+		return (ctfree(cmd, NULL, 'c', 127), NULL);
 	if (is_built(cmd) && get_cmd_size(cmd) == 1)
 		determine_exe_type(cmd);
 	else
 	{
-		if (get_cmd_size(cmd) > 1) 
-			ft_pipe(cmd);
+		if (get_cmd_size(cmd) > 1)
+			ft_multi_pipe(cmd);
 		else
 		{
 			printf("Commande sans pipe\n");
@@ -268,8 +270,14 @@ void	*parent(t_cmd *cmd)
 			if (cmd->pid == 0)
 				single_cmd_handler(cmd);
 			else
+			{
+				if (cmd->fdin != 0)
+					close (cmd->fdin);
+				if (cmd->fdout != 1)
+					close (cmd->fdout);
 				wait(NULL);
+			}
 		}
 	}
-    return (ctfree(cmd, NULL, 'c', 4), NULL);
+	return (ctfree(cmd, NULL, 'c', 0), NULL);
 }

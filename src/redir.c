@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/15 16:02:53 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/16 17:27:11 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,15 @@ int		file_err(t_token *tmp)
 	return (0);
 }
 
-int	heredoc(t_cmd *cmd)
+int	heredoc(t_cmd *temp, t_cmd *cmd)
 {
 	char	*tmp;
 	t_token	*redir;
 
-	if (!cmd || !cmd->redir)
+	if (!temp || !cmd->redir)
 		return (-1);
 	tmp = NULL;
-	redir = cmd->redir;
+	redir = temp->redir;
 	while (redir)
 	{
 		if (redir->type == fin)
@@ -54,7 +54,7 @@ int	heredoc(t_cmd *cmd)
 	}
 	if (!tmp)
 		tmp = ft_strdup("");
-	return (fd_heredoc(tmp));
+	return (fd_heredoc(tmp, cmd));
 }
 
 t_cmd	*redir(t_cmd *cmd)
@@ -75,14 +75,15 @@ t_cmd	*redir(t_cmd *cmd)
 			else if (tmp->type == rin)
 				temp->fdin = open(tmp->next->str, O_RDONLY);
 			else if (tmp->type == rdin)
-				temp->fdin = heredoc(temp);
+				temp->fdin = heredoc(temp, cmd);
 			if (tmp->type == rout || tmp->type == rdout)
 				tmp->fd = temp->fdout;
 			else if (tmp->type == rin || tmp->type == rdin)
 				tmp->fd = temp->fdin;
+			if (file_err(tmp))
+				return (NULL);
 			tmp = tmp->next;
 		}
-		file_err(tmp);
 		temp = temp->next;
 	}
 	return (cmd);

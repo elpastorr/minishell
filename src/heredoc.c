@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/15 17:46:31 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/16 18:01:58 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,20 +94,49 @@ char	*heredoc_extra(t_token *redir, char *tmp, int ret)
 	return (tmp);
 }
 
-int	fd_heredoc(char *s)
+int	fd_is_already_used(int fd, t_cmd *cmd)
+{
+	t_cmd	*tmp;
+	t_token	*redir;
+
+	tmp = cmd;
+	while (tmp)
+	{
+		redir = tmp->redir;
+		while (redir)
+		{
+			if (fd == redir->fd)
+				return (1);
+			redir = redir->next;
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int	fd_heredoc(char *s, t_cmd *cmd)
 {
 	int		fd;
 	char	*file_name;
 
 	fd = -1;
-	file_name = ft_strdup("/tmp/heredoc_file0.txt");
+	file_name = ft_strdup("/tmp/.heredoc_file0.txt");
+	if (!file_name)
+		exit_free(cmd, "Malloc error", 'c', 1);
 	while (fd == -1)
 	{
-		fd = open(file_name, O_CREAT | O_RDWR);
+		fd = open(file_name, O_CREAT | O_RDWR, 0777);
+		if (fd_is_already_used(fd, cmd))
+			fd = -1;
 		if (fd != -1)
 			write(fd, s, ft_strlen(s));
 		else
-			file_name[17]++;
+			file_name[18]++;
 	}
+	close (fd);
+	fd = open(file_name, O_RDONLY);
+	unlink(file_name);
+	if (file_name)
+		free(file_name);
 	return (fd);
 }

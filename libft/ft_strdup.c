@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 11:36:59 by elpastor          #+#    #+#             */
-/*   Updated: 2021/11/24 11:45:04 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/16 17:17:31 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ char	*ft_strdup(const char *s)
 
 	str = (char *)malloc(ft_strlen(s) + 1);
 	if (str == NULL)
-		return (str);
+		return (NULL);
 	i = -1;
 	while (s[++i])
 		str[i] = s[i];

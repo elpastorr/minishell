@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 17:33:22 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/14 15:09:37 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/16 18:20:25 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,5 @@ void	free_tabs_exit_free(t_cmd *cmd, char **env, char **argv, char *err)
 		free_tabtab(env);
 	if (argv)
 		free_tabtab(argv);
-	exit_free(cmd, err, 'c', 4);
+	exit_free(cmd, err, 'c', 1);
 }

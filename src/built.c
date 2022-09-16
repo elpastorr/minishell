@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/14 18:36:36 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/16 17:32:21 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,6 @@ void	exec_built(t_cmd *cmd)
 		ex_env(cmd);
 	else if (is_built(cmd) == 7)
 		ex_it(cmd);
-	exit_free(cmd, NULL, 'c', 0);
 }
 
 void	ex_echo(t_cmd *cmd)

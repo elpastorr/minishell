@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/15 16:02:26 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/16 17:04:12 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,12 +94,13 @@ int		is_heredoc(t_cmd *cmd);
 char	*heredoc_strcat(char *tmp, char *s);
 char	*read_heredoc(char *s, char *tmp);
 char	*heredoc_extra(t_token *redir, char *tmp, int ret);
-int		fd_heredoc(char *s);
+int		fd_heredoc(char *s, t_cmd *cmd);
+int	fd_is_already_used(int fd, t_cmd *cmd);
 
 /*REDIR*/
 void	print_err(char *file, char *s);
 int		file_err(t_token *tmp);
-int		heredoc(t_cmd *cmd);
+int		heredoc(t_cmd *temp, t_cmd *cmd);
 t_cmd	*redir(t_cmd *cmd);
 
 /*TOKEN*/
