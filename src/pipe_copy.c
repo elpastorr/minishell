@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/16 15:02:18 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/16 16:08:59 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ int	get_cmd_size(t_cmd *cmd)
 
 void	parent_life(t_cmd *tmp, int previous, int in, int out)
 {
-	t_token *cur;
-	
+	t_token	*cur;
+
 	cur = tmp->redir;
 	while (cur)
 	{
@@ -49,7 +49,7 @@ void	parent_life(t_cmd *tmp, int previous, int in, int out)
 		close(in);
 }
 
-void dup_in_and_out(t_cmd *tmp)
+void	dup_in_and_out(t_cmd *tmp)
 {
 	if (tmp->fdin != 0) //donc si cest previous ou un file
 	{
@@ -65,8 +65,8 @@ void dup_in_and_out(t_cmd *tmp)
 
 void	close_child_fds(t_cmd *tmp, int previous, int in, int out)
 {
-	t_token *cur;
-	
+	t_token	*cur;
+
 	cur = tmp->redir;
 	if (!cur)
 		printf("cur est NULL\n");
@@ -105,7 +105,6 @@ void	is_built_pipe(t_cmd *cmd, t_cmd *tmp, int previous, int fd[2])
 	exit_free(cmd, NULL, 'c', 0);
 }
 
-
 int	pipe_and_attribute_fds(t_cmd *cmd, t_cmd *tmp, int *previous, int fd[2])
 {
 	*previous = fd[0];
@@ -115,7 +114,7 @@ int	pipe_and_attribute_fds(t_cmd *cmd, t_cmd *tmp, int *previous, int fd[2])
 		if (pipe(fd) < 0)
 		{
 			ctfree(cmd, "minishell: pipe error", 'c', errno);
-			return (1);	
+			return (1);
 		}
 		if (tmp->fdout == 1)
 			tmp->fdout = fd[1];
@@ -126,11 +125,11 @@ int	pipe_and_attribute_fds(t_cmd *cmd, t_cmd *tmp, int *previous, int fd[2])
 void	multi_pipe_loop(t_cmd *cmd, t_cmd *tmp, int fd[2])
 {
 	int	previous;
-	
+
 	while (tmp)
 	{
 		if (pipe_and_attribute_fds(cmd, tmp, &previous, fd) == 1)
-			break;
+			break ;
 		if (tmp->fdin == 0)
 			tmp->fdin = previous;
 		printf("cmd = %s\tfd[0] = %d\tfd[1] = %d\n", tmp->arg->str, fd[0], fd[1]);
@@ -139,13 +138,13 @@ void	multi_pipe_loop(t_cmd *cmd, t_cmd *tmp, int fd[2])
 		if (tmp->pid < 0)
 		{
 			ctfree(cmd, "minishell: fork error", 'c', 1);
-			break;	
+			break ;
 		}
 		if (tmp->pid == 0)
 		{
 			if (is_built(tmp))
 				is_built_pipe(cmd, tmp, previous, fd);
-			else	
+			else
 				child_life(tmp, previous, fd[0], fd[1]);
 		}
 		if (tmp->pid != 0)
@@ -159,7 +158,7 @@ void	ft_multi_pipe(t_cmd *cmd)
 	int		i;
 	t_cmd	*tmp;
 	int		fd[2];
-	
+
 	fd[0] = 0;
 	tmp = cmd;
 	multi_pipe_loop(cmd, tmp, fd);
