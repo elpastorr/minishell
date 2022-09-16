@@ -6,77 +6,15 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/13 18:17:59 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/16 16:36:58 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*int is_built(t_cmd *cmd)
-{
-	if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "pwd")) //strcmp
-		return (1);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "cd"))
-		return (2);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "echo"))
-		return (3);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "unset"))
-		return (4);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "export"))
-		return (5);
-	else if (cmd->arg->str && !ft_strcmp(cmd->arg->str, "env"))
-		return (6);
-	return (0);
-}*/
+void	ft_multi_pipe(t_cmd *cmd);
 
-/*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)
-{
-	t_cmd	*tmp;
-	int		i;
-	int		fd[nb_of_pipes][2];
-
-	tmp = cmd;
-	i = 0;
-	while (i < nb_of_pipes)
-	{	
-		if (pipe(fd[i]) < 0)
-    	    return (NULL);
-		i++;
-	}
-    cmd->pid = fork();
-    if (cmd->pid < 0) //Erreur
-        return (NULL);
-	else if (cmd->pid == 0) //ENFANT
-	{
-		while (tmp)
-		{
-			if (is_exe(cmd))
-			{
-				dup2()
-			}
-		}
-	}
-    	child(cmd, fd);
-	else if (cmd->pid > 0) // ligne qui peut etre supp
-		waitpid(0, 0 ,0);
-}*/
-
-/*int find_nb_of_pipes(t_cmd *cmd)
-{
-    t_cmd   *tmp;
-    int     i;
-
-    i = 0;
-    tmp = cmd;
-    while (tmp->next != NULL)
-    {
-        i++;
-        tmp = tmp->next;
-    }
-    return (i);
-}*/
-
-int		is_exe(t_cmd *cmd)
+int	is_exe(t_cmd *cmd)
 {
 	char	*path;
 
@@ -104,31 +42,31 @@ char	*find_path(t_cmd *cmd, char **tab_of_paths)
 	int		i;
 	char	*tmp;
 	char	*cmd_path;
-	
+
 	i = 0;
 	tmp = join("/", cmd->arg->str);
-		if (!tmp)
-			return (NULL);
+	if (!tmp)
+		return (NULL);
 	while (tab_of_paths[i])
 	{
 		cmd_path = join(tab_of_paths[i], tmp);
-		if(!cmd_path)
+		if (!cmd_path)
 			return (free(tmp), NULL);
-		if (access(cmd_path, X_OK) == 0) //pour verifier si cest bien un executable
+		if (access(cmd_path, X_OK) == 0)
 			return (free(tmp), cmd_path);
 		free(cmd_path);
 		cmd_path = NULL;
 		i++;
-	} 
+	}
 	return (free(tmp), NULL);
 }
 
 char	*look_for_path(t_cmd *cmd)
 {
 	t_env	*whole_path;
-    char	**tab_of_paths;
+	char	**tab_of_paths;
 	char	*cmd_path;
-	
+
 	whole_path = handler(3, NULL, "PATH", NULL);
 	//printf("ligne entiere de chemins = [%s]\n", whole_path->content);
 	tab_of_paths = ft_split(whole_path->content, ':');
@@ -136,18 +74,17 @@ char	*look_for_path(t_cmd *cmd)
 		return (ctfree(cmd, "ERREUR MALLOC EXEC PATH", 'c', -1), NULL);
 	cmd_path = find_path(cmd, tab_of_paths);
 	if (!cmd_path)
-		return(free_tabtab(tab_of_paths));
+		return (free_tabtab(tab_of_paths));
 	free_tabtab(tab_of_paths);
-    return (cmd_path);
+	return (cmd_path);
 }
-
 
 char	**create_env_tab(t_env *env, int nb_of_lines)
 {
 	int		i;
 	char	*tmp;
 	char	**env_tab;
-	
+
 	env_tab = malloc(sizeof(char *) * (nb_of_lines + 1));
 	if (!env_tab)
 		return (NULL);
@@ -160,7 +97,7 @@ char	**create_env_tab(t_env *env, int nb_of_lines)
 			return (free_tabtab(env_tab), NULL);
 		env_tab[i] = join(tmp, env->content);
 		if (!env_tab[i])
-			return (free_tabtab(env_tab), NULL);	
+			return (free_tabtab(env_tab), NULL);
 		free(tmp);
 		tmp = NULL;
 		env = env->next;
@@ -200,8 +137,6 @@ char	**get_exec_args(t_cmd *cmd, int nb_of_arg)
 	if (!argv)
 		return (NULL);
 	tmp = cmd->arg;
-	//printf("premier arg str [%s]\n", tmp->str);
-	//printf("nb of arg [%d]\n", nb_of_arg);
 	i = -1;
 	while ((++i < nb_of_arg) && tmp)
 	{
@@ -252,7 +187,7 @@ void	exec(t_cmd *cmd, const char *pathname)
 	char	**argv;
 	char	**env;
 	int		nb_of_arg;
-	
+
 	env = get_exec_env();
 	if (!env)
 		exit_free(cmd, "\nERROR MALLOC ENV\n", 'c', 4);
@@ -262,11 +197,9 @@ void	exec(t_cmd *cmd, const char *pathname)
 		argv = get_exec_args(cmd, nb_of_arg);
 		if (!argv)
 			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE\n");
-		//printf("%s - %s - %p\n", argv[0], argv[1], argv[2]);
 		if (!strcmp(pathname, argv[0]))
 			pathname = argv[0];
 		ctfree(cmd, NULL, 'c', 4);
-		printf("\n///////////////////3///////////// \n");
 		if (execve(pathname, argv, env) == -1)
 			exit(4);
 	}
@@ -279,81 +212,64 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 	char	*path;
 
 	if (is_built(cmd))
-		printf("C'est un built-in perso\n");
-    else if (!is_built(cmd) && !find_slash(cmd))
-    {
-        path = look_for_path(cmd);
-        if (!path)
-            exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
-		printf("\n/////////1//////////\n");
+		exec_built(cmd);
+	else if (!is_built(cmd) && !find_slash(cmd))
+	{
+		path = look_for_path(cmd);
+		if (!path)
+			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
 		exec(cmd, path);
-    }
+	}
 	else if (!is_built(cmd) && find_slash(cmd))
 	{
-		if (access(cmd->arg->str, X_OK) == -1) {
-			printf("MAUVAIS EXECUTABLE\n");
+		if (access(cmd->arg->str, X_OK) == -1)
 			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
-		}
 		exec(cmd, cmd->arg->str);
 	}
 	else
 		exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 4);
 }
 
-/*void	exec_mutliple_pipes(t_cmd *cmd, int *fd, int nb_of_pipes)
+void	single_cmd_handler(t_cmd *cmd)
 {
-	t_cmd	*tmp;
-	int		i;
-	int		fd[nb_of_pipes][2];
+	t_token	*cur;
 
-	tmp = cmd;
-	i = 0;
-	while (i < nb_of_pipes)
-	{	
-		if (pipe(fd[i]) < 0)
-    	    return (NULL);
-		i++;
-	}
-    cmd->pid = fork();
-    if (cmd->pid < 0) //Erreur
-        return (NULL);
-	else if (cmd->pid == 0) //ENFANT
+	if (cmd->fdin != 0)
+		dup2(cmd->fdin, 0);
+	if (cmd->fdout != 1)
+		dup2(cmd->fdout, 1);
+	cur = cmd->redir;
+	while (cur)
 	{
-		while (tmp)
-		{
-			if (is_exe(cmd))
-			{
-				dup2()
-			}
-		}
+		if (cur->fd != 0)
+			close(cur->fd);
+		cur = cur->next;
 	}
-    	child(cmd, fd);
-	else if (cmd->pid > 0) // ligne qui peut etre supp
-		waitpid(0, 0 ,0);
-}*/
+	determine_exe_type(cmd);
+}
 
 void	*parent(t_cmd *cmd)
 {
 	//if (hdoc)
-	
 	if (!is_exe(cmd))
 		return (ctfree(cmd, NULL, 'c', 4), NULL);
-    else if (get_cmd_size(cmd) > 1) 
+	if (is_built(cmd) && get_cmd_size(cmd) == 1)
+		determine_exe_type(cmd);
+	else
 	{
-		printf("\n/////////0//////////\n");
-		printf("Il ya des pipes\n");
-		ft_pipe(cmd);
-	}
-    else
-    {
-        printf("Il n'y a pas de pipes\n");
-		cmd->pid = fork();
-		if (cmd->pid < 0)
-			return (NULL);
-		if (cmd->pid == 0)
-			determine_exe_type(cmd);
+		if (get_cmd_size(cmd) > 1)
+			ft_multi_pipe(cmd);
 		else
-			wait(NULL);
-    }
-    return (ctfree(cmd, NULL, 'c', 4), NULL);
+		{
+			printf("Commande sans pipe\n");
+			cmd->pid = fork();
+			if (cmd->pid < 0)
+				return (NULL);
+			if (cmd->pid == 0)
+				single_cmd_handler(cmd);
+			else
+				wait(NULL);
+		}
+	}
+	return (ctfree(cmd, NULL, 'c', 4), NULL);
 }
