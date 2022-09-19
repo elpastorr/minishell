@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:20:09 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/14 17:34:32 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:10:07 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ int	get_exit(void)
 	int		exit;
 
 	env = handler(-1, NULL, NULL, "?");
-	// printf("content : %s\n", env->content);
 	exit = ft_atoi(env->content);
 	free_env(env);
 	return (exit);

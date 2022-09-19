@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:48:46 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/13 15:34:05 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:12:06 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,16 +66,6 @@ void    loop(void)
 		split_words(s, 0, 0);
 	}
 }
-
-// void	print_env(t_env *env)
-// {
-// 	while (env)
-// 	{
-// 		printf("name : %s, content : %s\n", env->name, env->content);
-// 		env = env->next;
-// 	}
-// 	printf("\n\n\n");
-// }
 
 int	main(int ac, char **av, char **env)
 {

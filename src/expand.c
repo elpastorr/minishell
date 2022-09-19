@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:14:53 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/14 18:35:07 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:09:44 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ char	*replace_str(char *str, char *new, int j, int i)
 {
 	char	*tmp;
 
-	printf("s : %s, new : %s, i : %d, j : %d\n", str, new, i, j);
 	tmp = ft_strndup(str, i);
 	tmp = ft_strjoin_free(tmp, new, 2);
 	tmp = ft_strjoin_free(tmp, &str[j], 0);

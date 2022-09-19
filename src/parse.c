@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/16 17:33:50 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:12:42 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,9 +134,7 @@ void	create_cmd(t_token *token)
 	}
 	if (!temp || !pars_err(temp))
 		return ;
-	print_cmd(temp);
 	if (!redir(temp))
 		return (ctfree(temp, NULL, 'c', 1));
-	printf("cmd = %s\tfdin = %d\tfdout = %d\n\n", temp->arg->str, temp->fdin, temp->fdout);
 	parent(temp);
 }

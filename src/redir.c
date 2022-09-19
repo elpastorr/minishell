@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/16 17:27:11 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:16:42 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int		file_err(t_token *tmp)
 	{
 		if ((tmp->type == rout || tmp->type == rdout || tmp->type == rin) && tmp->fd <= 0)
 		{
+			printf("|%s|\n", tmp->next->str);
 			if (access(tmp->next->str, F_OK) != 0)
 				print_err(tmp->next->str, ": No such file or directory\n");
 			else
@@ -80,6 +81,7 @@ t_cmd	*redir(t_cmd *cmd)
 				tmp->fd = temp->fdout;
 			else if (tmp->type == rin || tmp->type == rdin)
 				tmp->fd = temp->fdin;
+			printf("fdin : %d, fd : %d\n", temp->fdin, tmp->fd);
 			if (file_err(tmp))
 				return (NULL);
 			tmp = tmp->next;

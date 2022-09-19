@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/16 18:32:52 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:09:49 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,7 +263,6 @@ void	*parent(t_cmd *cmd)
 			ft_multi_pipe(cmd);
 		else
 		{
-			printf("Commande sans pipe\n");
 			cmd->pid = fork();
 			if (cmd->pid < 0)
 				return (NULL);
