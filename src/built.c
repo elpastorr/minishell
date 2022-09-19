@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/16 17:32:21 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 15:50:11 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ void	ex_echo(t_cmd *cmd)
 	}
 	if (!n)
 		write(cmd->fdout, "\n", 1);
+	if (cmd->fdout != 1)
+		close(cmd->fdout);
+	//dup2(0, STDIN_FILENO);
+	//dup2(1, STDOUT_FILENO);
 }
 
 void	ex_cd(t_cmd *cmd, t_env *env)
@@ -129,7 +133,7 @@ void	ex_it(t_cmd *cmd)
 	exit_status = exit_atoi(arg->str, &atoi_err);
 	if (atoi_err == 0)
 	{
-		handler(exit_status, NULL, "?", NULL);
+		// handler(exit_status, NULL, "?", NULL);
 		exit_free(cmd, "exit", 'c', exit_status);
 	}
 	print_err("Minishell: exit: %s: numeric argument required\n", arg->str);

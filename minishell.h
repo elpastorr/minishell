@@ -6,7 +6,11 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/09/15 15:58:15 by elpastor         ###   ########.fr       */
+=======
+/*   Updated: 2022/09/16 14:46:21 by eleotard         ###   ########.fr       */
+>>>>>>> 33d807d178f1a830004811a8cf3ab6aa1ce6accf
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +27,7 @@
 # include <signal.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <errno.h>
 
 typedef enum s_type
 {
@@ -175,5 +180,9 @@ char	*join(char *base, char *read);
 
 /*TEST PRINTS*/
 void	print_tabtab(char **tab);
+
+void	ft_multi_pipe(t_cmd *cmd);
+
+
 
 #endif

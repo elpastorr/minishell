@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+         #
+#    By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/25 14:52:12 by elpastor          #+#    #+#              #
-#    Updated: 2022/08/10 19:06:43 by elpastor         ###   ########.fr        #
+#    Updated: 2022/09/15 17:21:31 by eleotard         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -55,7 +55,7 @@ BONUS = ft_lstnew.c ft_lstadd_front.c ft_lstsize.c ft_lstlast.c ft_lstadd_back.c
 
 BONUS_OBJS = ${BONUS:.c=.o}
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g3
 
 all:	${NAME}
 

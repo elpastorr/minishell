@@ -6,7 +6,11 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2022/09/16 17:04:12 by elpastor         ###   ########.fr       */
+=======
+/*   Updated: 2022/09/15 13:56:52 by eleotard         ###   ########.fr       */
+>>>>>>> 33d807d178f1a830004811a8cf3ab6aa1ce6accf
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -208,5 +212,7 @@ void	print_err(char *file, char *s);
 
 int		get_exit(void);
 void	reset_default_signals(void);
+
+void dup_in_and_out(t_cmd *tmp);
 
 #endif
