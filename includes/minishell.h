@@ -5,12 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/06/24 12:32:34 by ade-beta          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/09/16 17:04:12 by elpastor         ###   ########.fr       */
-=======
-/*   Updated: 2022/09/15 13:56:52 by eleotard         ###   ########.fr       */
->>>>>>> 33d807d178f1a830004811a8cf3ab6aa1ce6accf
+/*   Created: 2022/09/19 16:02:51 by elpastor          #+#    #+#             */
+/*   Updated: 2022/09/19 17:08:58 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +99,9 @@ int	fd_is_already_used(int fd, t_cmd *cmd);
 
 /*REDIR*/
 void	print_err(char *file, char *s);
-int		file_err(t_token *tmp);
+void	file_err(t_token *tmp, t_cmd *cmd);
 int		heredoc(t_cmd *temp, t_cmd *cmd);
-t_cmd	*redir(t_cmd *cmd);
+t_cmd	*redir(t_cmd *cmd, int hd);
 
 /*TOKEN*/
 void	print_token(t_token *token);
@@ -214,5 +210,6 @@ int		get_exit(void);
 void	reset_default_signals(void);
 
 void dup_in_and_out(t_cmd *tmp);
+void	close_all_fds(t_cmd *cmd, int opt);
 
 #endif

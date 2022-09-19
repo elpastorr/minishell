@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 15:50:11 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 19:03:42 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,10 @@ void	exec_built(t_cmd *cmd)
 		ex_env(cmd);
 	else if (is_built(cmd) == 7)
 		ex_it(cmd);
+	if (cmd->fdin != 0)
+		close(cmd->fdin);
+	if (cmd->fdout != 1)
+		close(cmd->fdout);
 }
 
 void	ex_echo(t_cmd *cmd)
@@ -72,8 +76,6 @@ void	ex_echo(t_cmd *cmd)
 	}
 	if (!n)
 		write(cmd->fdout, "\n", 1);
-	if (cmd->fdout != 1)
-		close(cmd->fdout);
 	//dup2(0, STDIN_FILENO);
 	//dup2(1, STDOUT_FILENO);
 }
@@ -88,7 +90,7 @@ void	ex_cd(t_cmd *cmd, t_env *env)
 	if (cmd->arg->next)
 		s = cmd->arg->next->str;
 	if (!env && (!s || s[0] == '~'))
-		return (print_err(NULL, "cd : HOME not set\n"));
+		return (print_err(NULL, "cd : HOME not set"));
 	if (env && (!s || !ft_strcmp(s, "~")))
 	{
 		s = ft_strdup(env->content);
@@ -137,5 +139,9 @@ void	ex_it(t_cmd *cmd)
 		exit_free(cmd, "exit", 'c', exit_status);
 	}
 	print_err("Minishell: exit: %s: numeric argument required\n", arg->str);
+	if (cmd->fdin != 0)
+		close(cmd->fdin);
+	if (cmd->fdout != 1)
+		close(cmd->fdout);
 	exit_free(cmd, NULL, 'c', atoi_err);
 }

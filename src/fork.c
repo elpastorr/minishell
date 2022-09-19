@@ -5,12 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/31 17:00:57 by eleotard          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2022/09/19 15:09:49 by elpastor         ###   ########.fr       */
-=======
-/*   Updated: 2022/09/16 16:36:58 by eleotard         ###   ########.fr       */
->>>>>>> 33d807d178f1a830004811a8cf3ab6aa1ce6accf
+/*   Created: 2022/09/19 16:03:32 by elpastor          #+#    #+#             */
+/*   Updated: 2022/09/19 18:57:09 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +44,8 @@ char	*find_path(t_cmd *cmd, char **tab_of_paths)
 	char	*cmd_path;
 
 	i = 0;
+	if (!cmd->arg)
+		return (NULL);
 	tmp = join("/", cmd->arg->str);
 	if (!tmp)
 		return (NULL);
@@ -215,8 +213,16 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 {
 	char	*path;
 
-	if (is_built(cmd))
+	if (!is_exe(cmd) && cmd->arg && cmd->arg->str)
+	{
+		print_err("command not found: ", cmd->arg->str);
+		exit_free(cmd, NULL, 'c', 127);
+	}
+	else if (is_built(cmd))
+	{
+		close_all_fds(cmd, 0);
 		exec_built(cmd);
+	}
 	else if (!is_built(cmd) && !find_slash(cmd))
 	{
 		path = look_for_path(cmd);
@@ -238,6 +244,7 @@ void	single_cmd_handler(t_cmd *cmd)
 {
 	t_token	*cur;
 
+	reset_default_signals();
 	if (cmd->fdin != 0)
 	{
 		dup2(cmd->fdin, 0);
@@ -257,8 +264,11 @@ void	single_cmd_handler(t_cmd *cmd)
 
 void	*parent(t_cmd *cmd)
 {
-	if (!is_exe(cmd))
+	if (!is_exe(cmd) && cmd->arg && cmd->arg->str && get_cmd_size(cmd) == 1)
+	{
+		print_err("command not found: ", cmd->arg->str);
 		return (ctfree(cmd, NULL, 'c', 127), NULL);
+	}
 	if (is_built(cmd) && get_cmd_size(cmd) == 1)
 		determine_exe_type(cmd);
 	else
@@ -274,10 +284,7 @@ void	*parent(t_cmd *cmd)
 				single_cmd_handler(cmd);
 			else
 			{
-				if (cmd->fdin != 0)
-					close (cmd->fdin);
-				if (cmd->fdout != 1)
-					close (cmd->fdout);
+				close_all_fds(cmd, 1);
 				wait(NULL);
 			}
 		}

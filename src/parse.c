@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 15:54:52 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 18:39:06 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ void	get_word_index(char *s, int *i, int *start)
 		(*i)++;
 	else
 	{
-		while (s[*i] && s[*i] != '|' && s[*i] != '<' && s[*i] != '>' && s[*i] != ' ' && s[*i] != '\t')
+		while (s[*i] && s[*i] != '|' && s[*i] != '<' && s[*i] != '>'
+			&& s[*i] != ' ' && s[*i] != '\t')
 		{
 			if (s[*i] == '"' || s[*i] == '\'')
 				skip_quot(s, i);
@@ -96,8 +97,9 @@ void	tokenizing(t_token *token)
 			i = 0;
 			while (tmp->str && tmp->str[i])
 			{
-				if (tmp->str[i] == '$' && quot_status(tmp->str, i) != 1 && (ft_isalnum(tmp->str[i + 1])
-					|| tmp->str[i + 1] == '_' || tmp->str[i + 1] == '?' || tmp->str[i + 1] == '$'))
+				if (tmp->str[i] == '$' && quot_status(tmp->str, i) != 1
+					&& (ft_isalnum(tmp->str[i + 1]) || tmp->str[i + 1] == '_'
+						|| tmp->str[i + 1] == '?' || tmp->str[i + 1] == '$'))
 					tmp->str = expend_words(tmp->str, i);
 				else
 					tmp->str = del_unused_quot(tmp->str);
@@ -106,6 +108,8 @@ void	tokenizing(t_token *token)
 		}
 		tmp = tmp->next;
 	}
+	if (!token)
+		return ;
 	create_cmd(token);
 }
 
@@ -115,8 +119,6 @@ void	create_cmd(t_token *token)
 	t_cmd	*temp;
 	t_token	*tmp;
 
-	if (!token)
-		return ;
 	data = init_cmd(NULL, NULL, NULL);
 	if (!data)
 		exit_free(token, "Error cmd init...", 't', 1);
@@ -134,7 +136,7 @@ void	create_cmd(t_token *token)
 	}
 	if (!temp || !pars_err(temp))
 		return ;
-	if (!redir(temp))
+	if (!redir(temp, 0))
 		return (ctfree(temp, NULL, 'c', 1));
 	parent(temp);
 }

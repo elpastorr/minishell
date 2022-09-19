@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:02:15 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 15:39:11 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 19:06:06 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	exit_free(void *ptr, char *err, char type, int n)
 	else if (type == 'c')
 		free_cmd(ptr);
 	if (err)
-		printf("%s\n", err);
+		print_err(err, NULL);
 	rl_clear_history();
 	exit(n);
 }

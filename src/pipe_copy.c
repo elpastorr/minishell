@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 15:57:55 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 19:00:25 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,8 +68,6 @@ void	close_child_fds(t_cmd *tmp, int previous, int in, int out)
 	t_token	*cur;
 
 	cur = tmp->redir;
-	if (!cur)
-		printf("cur est NULL\n");
 	while (cur)
 	{
 		if (cur->fd != 0 && cur->fd != tmp->fdin && cur->fd != tmp->fdout)

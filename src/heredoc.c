@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/16 18:01:58 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 17:36:54 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,5 +138,7 @@ int	fd_heredoc(char *s, t_cmd *cmd)
 	unlink(file_name);
 	if (file_name)
 		free(file_name);
+	if (s)
+		free(s);
 	return (fd);
 }

@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:20:09 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 15:10:07 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 18:27:17 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*get_content(char *env)
 	return (ft_strdup(env));
 }
 
-int		get_nbpipe(t_cmd *cmd)
+int	get_nbpipe(t_cmd *cmd)
 {
 	int		i;
 	t_cmd	*tmp;

@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 16:42:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/14 16:02:23 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 18:26:38 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ t_token	*cmd_redir(t_token **tmp)
 		if ((*tmp)->type == pip)
 			return (NULL);
 		while ((*tmp)->next && (*tmp)->next->type != word
-				&& (*tmp)->next->type != pip)
+			&& (*tmp)->next->type != pip)
 			(*tmp) = (*tmp)->next;
 	}
 	stop = temp;
@@ -119,7 +119,7 @@ t_cmd	*pars_err(t_cmd *cmd)
 		while (r)
 		{
 			if ((r->type == word || r->type == pip)
-					|| (r->type > 3 && r->next && r->next->type >= 3))
+				|| (r->type > 3 && r->next && r->next->type >= 3))
 			{
 				printf("Minishell: parse error near '%s'\n", r->str);
 				ctfree(cmd, NULL, 'c', 2);

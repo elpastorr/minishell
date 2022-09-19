@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:14:53 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 15:09:44 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 18:25:17 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*expand_special(char *tmp, char *util, int *j)
 	else
 		util = ft_strdup("Minishell");
 	(*j)++;
- 	return (util);
+	return (util);
 }
 
 char	*expand_extra(char *tmp, char *util, int *j, int i)
@@ -70,7 +70,6 @@ char	*expend_words(char *s, int i)
 		return (NULL);
 	return (del_unused_quot(tmp));
 }
-
 
 char	*replace_str(char *str, char *new, int j, int i)
 {
