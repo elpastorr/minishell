@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/04 15:36:25 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/19 18:25:48 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 20:21:16 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,29 @@ void	catch_sigquit(int sig)
 
 void	reset_default_signals(void)
 {
-	struct sigaction	sigint;
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	signal(SIGTSTP, SIG_DFL);
+	
+	/*struct sigaction	sigint;
 	struct sigaction	sigquit;
 
 	sigint.sa_handler = SIG_DFL;
+	sigint.sa_flags = 0;
 	sigquit.sa_handler = SIG_DFL;
+	sigquit.sa_flags = 0;
 	sigaction(SIGINT, &sigint, NULL);
 	sigaction(SIGQUIT, &sigquit, NULL);
-	signal(SIGTSTP, SIG_DFL);
+	//signal(SIGINT)
+	signal(SIGTSTP, SIG_DFL);*/
 }
 
 void	catch_signals(void)
 {
-	struct sigaction	sigint;
+	signal(SIGINT, catch_sigint);
+	signal(SIGQUIT, catch_sigquit);
+	
+	/*struct sigaction	sigint;
 	struct sigaction	sigquit;
 
 	sigint.sa_handler = catch_sigint;
@@ -52,5 +62,11 @@ void	catch_signals(void)
 	sigquit.sa_flags = SA_RESTART;
 	sigaction(SIGINT, &sigint, NULL);
 	sigaction(SIGQUIT, &sigquit, NULL);
-	signal(SIGTSTP, SIG_IGN);
+	signal(SIGTSTP, SIG_IGN);*/
+}
+
+void	here_handler_sigint(int sig)
+{
+	(void)sig;
+	close(0);
 }

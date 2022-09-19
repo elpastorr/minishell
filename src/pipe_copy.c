@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_copy.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 19:00:25 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 20:39:04 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	close_child_fds(t_cmd *tmp, int previous, int in, int out)
 	cur = tmp->redir;
 	while (cur)
 	{
-		if (cur->fd != 0 && cur->fd != tmp->fdin && cur->fd != tmp->fdout)
+		if (cur->fd != 0)
 			close(cur->fd);
 		cur = cur->next;
 	}
@@ -128,11 +128,12 @@ void	multi_pipe_loop(t_cmd *cmd, t_cmd *tmp, int fd[2])
 		tmp->pid = fork();
 		if (tmp->pid < 0)
 		{
-			ctfree(cmd, "minishell: fork error", 'c', 1);
+			ctfree(cmd, "fork error", 'c', 1);
 			break ;
 		}
 		if (tmp->pid == 0)
 		{
+			reset_default_signals();
 			if (is_built(tmp))
 				is_built_pipe(cmd, tmp, previous, fd);
 			else

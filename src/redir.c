@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 18:47:04 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 20:34:19 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ t_cmd	*redir(t_cmd *cmd, int hd)
 {
 	t_cmd	*cmd_tmp;
 	t_token	*token_tmp;
+	int		oui;
 
 	cmd_tmp = cmd;
 	while (cmd_tmp)
@@ -92,9 +93,12 @@ t_cmd	*redir(t_cmd *cmd, int hd)
 				cmd_tmp->fdin = open(token_tmp->next->str, O_RDONLY);
 			else if (token_tmp->type == rdin && !hd)
 			{
-				reset_default_signals();
+				oui = dup(0); //on copie l'entree standard
+				signal(SIGINT, here_handler_sigint); //on la ferme pour fermer l'entree de readline et donc fermer le heredoc
 				cmd_tmp->fdin = heredoc(cmd_tmp, cmd);
 				hd = 1;
+				dup2(oui, 0); // comme elle a ete fermee on la remplace par sa copie et la retrouve en tant qu'entree standard normale
+				close(oui); //on ferme la copie
 				catch_signals();
 			}
 			if (token_tmp->type == rout || token_tmp->type == rdout)
@@ -103,7 +107,7 @@ t_cmd	*redir(t_cmd *cmd, int hd)
 				token_tmp->fd = cmd_tmp->fdin;
 			if (token_tmp->fd == -1)
 				return (file_err(token_tmp, cmd_tmp), NULL);
-			// printf("token fd : %d, cmd fd : %d\n", token_tmp->fd, cmd_tmp->fdin);
+			printf("token fd : %d, cmd fd : %d\n", token_tmp->fd, cmd_tmp->fdin);
 			token_tmp = token_tmp->next;
 		}
 		cmd_tmp = cmd_tmp->next;
