@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/24 12:48:46 by ade-beta          #+#    #+#             */
-/*   Updated: 2022/09/19 15:12:06 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/20 16:23:15 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,16 +50,17 @@ int	only_space(char *str)
 	return (1);
 }
 
-void    loop(void)
+void	loop(void)
 {
 	char	*s;
 
 	s = NULL;
 	while (1)
 	{
+		
 		s = readline("\e[1m\e[31m\002""Minishell : ""\001\e[0m\002");
 		if (s == NULL)
-			exit_free(NULL, "exit", 0, 1); // 
+			exit_free(NULL, "exit", 0, 1);
 		add_history(s);
 		if (only_space(s))
 			continue ;

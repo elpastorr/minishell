@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 16:02:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 17:08:58 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/20 15:45:04 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,5 +211,6 @@ void	reset_default_signals(void);
 
 void dup_in_and_out(t_cmd *tmp);
 void	close_all_fds(t_cmd *cmd, int opt);
+void	here_handler_sigint(int sig);
 
 #endif
