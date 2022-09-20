@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 16:02:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 20:20:47 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/20 17:47:19 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,6 @@ void	exec(t_cmd *cmd, const char *pathname);
 void	exec_cmd_without_redir(t_cmd *cmd, const char *pathname, int nb_of_arg, char **env);
 
 /*PIPES*/
-void	ft_pipe(t_cmd *cmd);
 
 
 /*SIGNALS*/
@@ -209,8 +208,10 @@ void	print_err(char *file, char *s);
 int		get_exit(void);
 void	reset_default_signals(void);
 
-void dup_in_and_out(t_cmd *tmp);
+void	dup_in_and_out(t_cmd *tmp);
 void	close_all_fds(t_cmd *cmd, int opt);
 void	here_handler_sigint(int sig);
+int		ft_multi_pipe(t_cmd *cmd);
+void	check_children_status(t_cmd *tmp, int *res);
 
 #endif
