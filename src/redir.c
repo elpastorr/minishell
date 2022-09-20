@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/20 16:53:38 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/20 16:58:22 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,11 @@ void	redir_plus(t_token *token, t_cmd *cmd_tmp, t_cmd *cmd, int *hd)
 	int	oui;
 
 	if (token->type == rout)
-		cmd_tmp->fdout = open(token->next->str, O_WRONLY |
-			O_CREAT | O_TRUNC, 0644);
+		cmd_tmp->fdout = open(token->next->str, O_WRONLY
+				| O_CREAT | O_TRUNC, 0644);
 	else if (token->type == rdout)
-		cmd_tmp->fdout = open(token->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		cmd_tmp->fdout = open(token->next->str, O_WRONLY
+				| O_CREAT | O_APPEND, 0644);
 	else if (token->type == rin)
 		cmd_tmp->fdin = open(token->next->str, O_RDONLY);
 	else if (token->type == rdin && *hd == 0)
@@ -95,7 +96,6 @@ t_cmd	*redir(t_cmd *cmd, int hd)
 {
 	t_cmd	*cmd_tmp;
 	t_token	*token_tmp;
-	int		oui;
 
 	cmd_tmp = cmd;
 	while (cmd_tmp)

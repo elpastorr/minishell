@@ -6,11 +6,31 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/01 17:23:56 by eleotard          #+#    #+#             */
-/*   Updated: 2022/09/07 18:53:39 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/20 17:03:02 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	fd_is_already_used(int fd, t_cmd *cmd)
+{
+	t_cmd	*tmp;
+	t_token	*redir;
+
+	tmp = cmd;
+	while (tmp)
+	{
+		redir = tmp->redir;
+		while (redir)
+		{
+			if (fd == redir->fd)
+				return (1);
+			redir = redir->next;
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
 
 char	*ft_strjoin_m(char *base, char *read)
 {

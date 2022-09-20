@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handler.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:33:29 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 18:23:46 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/20 17:06:11 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 static t_env	*add_env(t_env *env, char *name, char *content)
 {
 	t_env	*tmp;
-	
+
 	tmp = env;
 	if (!name)
 		return (env);
@@ -96,23 +96,13 @@ static t_env	*mod_env(t_env **env, char *name, char *content, int opt)
 		}
 		if (!tmp->next)
 			if (name && content)
-				return (tmp->next = init_env(NULL, ft_strdup(name), ft_strdup(content)));
+				return (tmp->next = init_env(NULL, ft_strdup(name),
+						ft_strdup(content)));
 		tmp = tmp->next;
 	}
 	if (!tmp && name && content)
 		return (*env = init_env(NULL, ft_strdup(name), ft_strdup(content)));
 	return (tmp);
-}
-
-void	print_env(t_env *env)
-{
-	printf("%d\n", !env);
-	while (env)
-	{
-		printf("name : %s, content : %s\n", env->name, env->content);
-		env = env->next;
-	}
-	printf("\n\n\n");
 }
 
 t_env	*handler(int opt, char **env, char *name, char *content)

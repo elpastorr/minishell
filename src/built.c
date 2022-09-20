@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 20:36:51 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/20 17:47:28 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,17 +109,6 @@ void	ex_cd(t_cmd *cmd, t_env *env)
 		free(s);
 }
 
-void	ex_pwd(t_cmd *cmd)
-{
-	char	*s;
-	char	buf[4096];
-
-	s = getcwd(buf, 4096);
-	if (s)
-		ft_putstr_fd(s, cmd->fdout);
-	write(cmd->fdout, "\n", 1);
-}
-
 void	ex_it(t_cmd *cmd)
 {
 	t_token			*arg;
@@ -129,16 +118,19 @@ void	ex_it(t_cmd *cmd)
 	if (!cmd->arg->next)
 		exit_free(cmd, NULL, 'c', 0);
 	if (cmd->arg->next->next)
-		return (ctfree(cmd, "Minishell: exit: too many arguments", 'c', 1));
+	{
+		print_err("exit: too many arguments", NULL);
+		return ;
+	}
 	arg = cmd->arg->next;
 	atoi_err = 0;
 	exit_status = exit_atoi(arg->str, &atoi_err);
 	if (atoi_err == 0)
 	{
-		// handler(exit_status, NULL, "?", NULL);
+		handler(exit_status, NULL, "?", NULL);
 		exit_free(cmd, "exit", 'c', exit_status);
 	}
-	print_err("exit: %s: numeric argument required\n", arg->str);
+	print_err("exit: numeric argument required: ", arg->str);
 	if (cmd->fdin != 0)
 		close(cmd->fdin);
 	if (cmd->fdout != 1)

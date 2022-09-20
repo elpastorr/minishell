@@ -6,13 +6,13 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/12 15:03:24 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/14 16:01:32 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/20 17:48:54 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int ft_isspace(char c)
+int	ft_isspace(char c)
 {
 	if ((c >= '\t' && c <= '\r') || c == ' ')
 		return (1);
@@ -35,13 +35,11 @@ int	only_n(char *s)
 
 long long int	exit_atoi(char *s, int *err)
 {
-	unsigned long long int  nb;
-	int i;
-	int neg;
+	int	i;
+	int	neg;
 
 	if (!s)
 		return (0);
-	nb = 0;
 	i = 0;
 	neg = 1;
 	while (s[i] && ft_isspace(s[i]))
@@ -54,22 +52,44 @@ long long int	exit_atoi(char *s, int *err)
 	}
 	if (!ft_isdigit(s[i]))
 		*err = 2;
+	return (exit_atoi_plus(s, i, neg, err));
+}
+
+long long int	exit_atoi_plus(char *s, int i, int neg, int *err)
+{
+	unsigned long long int	nb;
+
+	nb = 0;
 	while (s[i] && ft_isdigit(s[i]))
 		nb = nb * 10 + s[i++] - '0';
 	while (s[i] && ft_isspace(s[i]))
 		i++;
-	return (exit_atoi_plus(s, i, nb, neg, err));
-}
-
-long long int   exit_atoi_plus(char *s, int i, unsigned long long int nb, int neg, int *err)
-{
 	if (s[i])
 		*err = 2;
-	if ((neg == 1 && nb > 9223372036854775807) || (neg == -1 && nb > 9223372036854775808u))
+	if ((neg == 1 && nb > 9223372036854775807)
+		|| (neg == -1 && nb > 9223372036854775808u))
 		*err = 2;
 	if (neg == 1)
 		return ((nb * neg) % 256);
 	nb %= 256;
 	nb -= 256;
 	return (nb * neg);
+}
+
+void	ex_port_substr(t_token *arg, char **name, char **content)
+{
+	if (get_equal(arg->str) == -1)
+	{
+		*name = ft_substr(arg->str, 0, get_equal(arg->str));
+		*content = ft_substr(arg->str, (get_equal(arg->str) + 2),
+				ft_strlen(arg->str));
+		handler(5, NULL, *name, *content);
+	}
+	else
+	{
+		*name = ft_substr(arg->str, 0, get_equal(arg->str));
+		*content = ft_substr(arg->str, (get_equal(arg->str) + 1),
+				ft_strlen(arg->str));
+		handler(3, NULL, *name, *content);
+	}
 }

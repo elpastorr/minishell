@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/09/19 16:02:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/20 16:53:53 by elpastor         ###   ########.fr       */
+/*   Created: 2022/09/20 17:03:53 by elpastor          #+#    #+#             */
+/*   Updated: 2022/09/20 17:42:32 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,6 @@ void	create_cmd(t_token *token);
 
 /*HANDLER*/
 t_env	*handler(int opt, char **env, char *name, char *val);
-void	print_env(t_env *env);
 
 /*HEREDOC*/
 int		is_heredoc(t_cmd *cmd);
@@ -95,7 +94,7 @@ char	*heredoc_strcat(char *tmp, char *s);
 char	*read_heredoc(char *s, char *tmp);
 char	*heredoc_extra(t_token *redir, char *tmp, int ret);
 int		fd_heredoc(char *s, t_cmd *cmd);
-int	fd_is_already_used(int fd, t_cmd *cmd);
+
 
 /*REDIR*/
 void	print_err(char *file, char *s);
@@ -124,6 +123,7 @@ t_cmd	*cmd_init(t_cmd *res, t_token **tmp, t_token *token);
 char	*get_name(char *env);
 char	*get_content(char *env);
 int		get_cmd_size(t_cmd *cmd);
+int	get_equal(char *s);
 
 /*EXPAND*/
 char	*expand_special(char *tmp, char *util, int *j);
@@ -143,20 +143,20 @@ int		is_built(t_cmd *cmd);
 void	exec_built(t_cmd *cmd);
 void	ex_echo(t_cmd *cmd);
 void	ex_cd(t_cmd *cmd, t_env *env);
-void	ex_pwd(t_cmd *cmd);
 void	ex_it(t_cmd *cmd);
 
 /*ENV_BUILT*/
-int		get_equal(char *s);
 void	ex_port(t_cmd *cmd);
 void	ex_unset(t_cmd *cmd);
 void	ex_env(t_cmd *cmd);
+void	ex_pwd(t_cmd *cmd);
 
 /*BUILT_UTILS*/
 int 			ft_isspace(char c);
 int				only_n(char *s);
 long long int	exit_atoi(char *s, int *err);
-long long int	exit_atoi_plus(char *s, int i, unsigned long long int nb, int neg, int *err);
+long long int	exit_atoi_plus(char *s, int i, int neg, int *err);
+void	ex_port_substr(t_token *arg, char **name, char **content);
 
 /*FREE*/
 void	free_token(t_token *token);
@@ -200,11 +200,12 @@ char	*ft_strjoin_m(char *base, char *read);
 char	*join(char *base, char *read);
 void	ft_free_opt(char *s1, char *s2, int opt);
 char	*ft_strjoin_free(char *s1, char *s2, int opt);
-
+int	fd_is_already_used(int fd, t_cmd *cmd);
 
 /*TEST PRINTS*/
 void	print_tabtab(char **tab);
 void	print_err(char *file, char *s);
+void	print_env(t_env *env);
 
 int		get_exit(void);
 void	reset_default_signals(void);
