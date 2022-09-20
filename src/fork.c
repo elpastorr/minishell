@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fork.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 16:03:32 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 18:57:09 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 20:30:25 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ void	exec(t_cmd *cmd, const char *pathname)
 	{
 		argv = get_exec_args(cmd, nb_of_arg);
 		if (!argv)
-			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE\n");
+			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE11\n");
 		if (!strcmp(pathname, argv[0]))
 			pathname = argv[0];
 		ctfree(cmd, NULL, 'c', 0);
@@ -206,7 +206,7 @@ void	exec(t_cmd *cmd, const char *pathname)
 			exit(1);
 	}
 	else
-		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE\n");
+		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE==\n");
 }
 
 void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
@@ -218,32 +218,30 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 		print_err("command not found: ", cmd->arg->str);
 		exit_free(cmd, NULL, 'c', 127);
 	}
-	else if (is_built(cmd))
+	else if (is_built(cmd) && get_cmd_size(cmd) == 1)
 	{
-		close_all_fds(cmd, 0);
+		close_all_fds(cmd, 1);
 		exec_built(cmd);
 	}
 	else if (!is_built(cmd) && !find_slash(cmd))
 	{
 		path = look_for_path(cmd);
 		if (!path)
-			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 127);
+			exit_free(cmd, "WRONG COMMAND/NOT EXE**\n", 'c', 127);
 		exec(cmd, path);
 	}
 	else if (!is_built(cmd) && find_slash(cmd))
 	{
 		if (access(cmd->arg->str, X_OK) == -1)
-			exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 127);
+			exit_free(cmd, "WRONG COMMAND/NOT EXE--\n", 'c', 127);
 		exec(cmd, cmd->arg->str);
 	}
 	else
-		exit_free(cmd, "WRONG COMMAND/NOT EXE\n", 'c', 127);
+		exit_free(cmd, "WRONG COMMAND/NOT EXE++\n", 'c', 127);
 }
 
 void	single_cmd_handler(t_cmd *cmd)
 {
-	t_token	*cur;
-
 	reset_default_signals();
 	if (cmd->fdin != 0)
 	{
@@ -252,13 +250,7 @@ void	single_cmd_handler(t_cmd *cmd)
 	}
 	if (cmd->fdout != 1)
 		dup2(cmd->fdout, 1);
-	cur = cmd->redir;
-	while (cur)
-	{
-		if (cur->fd != 0)
-			close(cur->fd);
-		cur = cur->next;
-	}
+	close_all_fds(cmd, 1);
 	determine_exe_type(cmd);
 }
 
@@ -269,6 +261,8 @@ void	*parent(t_cmd *cmd)
 		print_err("command not found: ", cmd->arg->str);
 		return (ctfree(cmd, NULL, 'c', 127), NULL);
 	}
+	if (!cmd->arg)
+		return (close_all_fds(cmd, 1), ctfree(cmd, NULL, 'c', 0), NULL);
 	if (is_built(cmd) && get_cmd_size(cmd) == 1)
 		determine_exe_type(cmd);
 	else

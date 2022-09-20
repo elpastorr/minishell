@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:02:15 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 19:06:06 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/19 20:51:52 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	ctfree(void *ptr, char *err, char type, int n)
 	if (type == 'c')
 		free_cmd(ptr);
 	if (err)
-		printf("%s\n", err);
+		print_err(err, NULL);
 	handler(n, NULL, "?", NULL);
 }
 

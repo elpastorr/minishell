@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/20 16:26:04 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/20 16:53:38 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ t_cmd	*redir(t_cmd *cmd, int hd)
 {
 	t_cmd	*cmd_tmp;
 	t_token	*token_tmp;
+	int		oui;
 
 	cmd_tmp = cmd;
 	while (cmd_tmp)
