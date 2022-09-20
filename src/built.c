@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 16:37:42 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/20 17:47:28 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/20 18:18:47 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ void	ex_cd(t_cmd *cmd, t_env *env)
 		f = 1;
 	}
 	if (s && chdir(s) == -1)
-		printf("Minishell: cd: %s: Not a directory\n", s);
+		print_err("cd: Not a directory: ", s);
 	else
 		handler(3, NULL, "PWD", getcwd(buf, 4096));
 	if (f)
