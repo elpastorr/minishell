@@ -83,3 +83,4 @@ cat < truc auiexste pas
     imprimer file not found
 
 git add -u pour ajouter que les trucs modified
+

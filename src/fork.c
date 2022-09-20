@@ -6,13 +6,11 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/19 16:03:32 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 20:30:25 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/20 18:09:15 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	ft_multi_pipe(t_cmd *cmd);
 
 int	is_exe(t_cmd *cmd)
 {
@@ -198,18 +196,16 @@ void	exec(t_cmd *cmd, const char *pathname)
 	{
 		argv = get_exec_args(cmd, nb_of_arg);
 		if (!argv)
-			free_tabs_exit_free(cmd, env, argv, "WRONG COMMAND/NOT EXE11\n");
+			free_tabs_exit_free(cmd, env, argv, "ERROR MALLOC ARGS\n");
 		if (!strcmp(pathname, argv[0]))
 			pathname = argv[0];
 		ctfree(cmd, NULL, 'c', 0);
 		if (execve(pathname, argv, env) == -1)
-			exit(1);
+			exit(127);
 	}
-	else
-		free_tabs_exit_free(cmd, env, NULL, "WRONG COMMAND/NOT EXE==\n");
 }
 
-void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
+void	determine_exe_type(t_cmd *cmd)
 {
 	char	*path;
 
@@ -218,36 +214,32 @@ void	determine_exe_type(t_cmd *cmd) //besoin de malloc les fd pour ca
 		print_err("command not found: ", cmd->arg->str);
 		exit_free(cmd, NULL, 'c', 127);
 	}
-	else if (is_built(cmd) && get_cmd_size(cmd) == 1)
-	{
-		close_all_fds(cmd, 1);
-		exec_built(cmd);
-	}
 	else if (!is_built(cmd) && !find_slash(cmd))
 	{
 		path = look_for_path(cmd);
 		if (!path)
-			exit_free(cmd, "WRONG COMMAND/NOT EXE**\n", 'c', 127);
+		{
+			print_err("command not found: ", cmd->arg->str);
+			exit_free(cmd, NULL, 'c', 127);
+		}
 		exec(cmd, path);
 	}
 	else if (!is_built(cmd) && find_slash(cmd))
 	{
 		if (access(cmd->arg->str, X_OK) == -1)
-			exit_free(cmd, "WRONG COMMAND/NOT EXE--\n", 'c', 127);
+		{
+			print_err("command not found: ", cmd->arg->str);
+			exit_free(cmd, NULL, 'c', 127);
+		}
 		exec(cmd, cmd->arg->str);
 	}
-	else
-		exit_free(cmd, "WRONG COMMAND/NOT EXE++\n", 'c', 127);
 }
 
 void	single_cmd_handler(t_cmd *cmd)
 {
 	reset_default_signals();
 	if (cmd->fdin != 0)
-	{
 		dup2(cmd->fdin, 0);
-		close(cmd->fdin);
-	}
 	if (cmd->fdout != 1)
 		dup2(cmd->fdout, 1);
 	close_all_fds(cmd, 1);
@@ -256,6 +248,9 @@ void	single_cmd_handler(t_cmd *cmd)
 
 void	*parent(t_cmd *cmd)
 {
+	int res;
+	
+	res = 0;
 	if (!is_exe(cmd) && cmd->arg && cmd->arg->str && get_cmd_size(cmd) == 1)
 	{
 		print_err("command not found: ", cmd->arg->str);
@@ -264,24 +259,30 @@ void	*parent(t_cmd *cmd)
 	if (!cmd->arg)
 		return (close_all_fds(cmd, 1), ctfree(cmd, NULL, 'c', 0), NULL);
 	if (is_built(cmd) && get_cmd_size(cmd) == 1)
-		determine_exe_type(cmd);
+	{
+		close_all_fds(cmd, 1);
+		exec_built(cmd);
+		return (ctfree(cmd, NULL, 'c', get_exit()), NULL);
+	}
 	else
 	{
 		if (get_cmd_size(cmd) > 1)
-			ft_multi_pipe(cmd);
+			res = ft_multi_pipe(cmd);
 		else
 		{
 			cmd->pid = fork();
 			if (cmd->pid < 0)
-				return (NULL);
+				return (ctfree(cmd, NULL, 'c', 2), NULL);
+			signal(SIGINT, SIG_IGN);
 			if (cmd->pid == 0)
 				single_cmd_handler(cmd);
 			else
 			{
 				close_all_fds(cmd, 1);
-				wait(NULL);
+				check_children_status(cmd, &res);
 			}
 		}
+		return (ctfree(cmd, NULL, 'c', res), NULL);
 	}
-	return (ctfree(cmd, NULL, 'c', 0), NULL);
+	return (NULL);
 }

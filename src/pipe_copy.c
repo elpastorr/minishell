@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/31 17:28:58 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 20:39:04 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/20 17:46:55 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ void	multi_pipe_loop(t_cmd *cmd, t_cmd *tmp, int fd[2])
 			ctfree(cmd, "fork error", 'c', 1);
 			break ;
 		}
+		signal(SIGINT, SIG_IGN);
 		if (tmp->pid == 0)
 		{
 			reset_default_signals();
@@ -145,16 +146,42 @@ void	multi_pipe_loop(t_cmd *cmd, t_cmd *tmp, int fd[2])
 	}
 }
 
-void	ft_multi_pipe(t_cmd *cmd)
+void	check_children_status(t_cmd *tmp, int *res)
 {
-	int		i;
+	int	status;
+	
+	while (tmp)
+	{
+		waitpid(tmp->pid, &status, 0);
+		tmp = tmp->next;
+	}
+	catch_signals();
+	if (WIFEXITED(status))
+		*res = 0;
+	else
+	{
+		if (WIFSIGNALED(status))
+		{
+			*res = 128 + status;
+			write(1, "\n", 1);
+			printf("status = %d\n", status); 
+		}
+		else
+			*res = 128 + WEXITSTATUS(status);
+	}
+}
+
+int	ft_multi_pipe(t_cmd *cmd)
+{
+	int		res;
 	t_cmd	*tmp;
 	int		fd[2];
 
+	res = 0;
 	fd[0] = 0;
 	tmp = cmd;
 	multi_pipe_loop(cmd, tmp, fd);
-	i = -1;
-	while (++i < get_cmd_size(cmd))
-		waitpid(0,0,0);
+	tmp = cmd;
+	check_children_status(tmp, &res);
+	return (res);
 }
