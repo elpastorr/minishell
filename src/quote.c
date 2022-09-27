@@ -6,11 +6,18 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:05:46 by elpastor          #+#    #+#             */
-/*   Updated: 2022/08/15 14:05:29 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/24 17:03:05 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	get_next_quot(char *s, int i)
+{
+	while (s[i] && s[i] != '"' && s[i] != '\'')
+		i++;
+	return (i);
+}
 
 int	quot_status(char *s, int i)
 {
@@ -94,13 +101,13 @@ void	del_unquot_extra(char *s, int *i, int *j, char quot)
 			s[*j] = s[*j + 1];
 			(*j)++;
 		}
-		len = --(*i) - 1;
+		len = --(*i);
 		while (s[*i])
 		{
 			s[*i] = s[*i + 1];
 			(*i)++;
 		}
-		s[*i - 1] = '\0';
-		*i = len;
+		s[*i - 1] = 0;
+		*i = get_next_quot(s, len);
 	}
 }

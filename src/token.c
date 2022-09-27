@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:55:11 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 16:52:45 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/27 16:28:28 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,29 @@ t_token	*new_token(t_token *next, char *str, int type)
 		return (NULL);
 	tmp->type = type;
 	tmp->str = str;
-	tmp->fd = 0; //ajoute pour les redir
+	tmp->fd = 0;
 	tmp->next = next;
 	return (tmp);
+}
+
+int	no_cmd_in_pip(t_token *token)
+{
+	t_token	*tmp;
+
+	tmp = token;
+	while (tmp)
+	{
+		if (tmp->type == pip)
+		{
+			tmp = tmp->next;
+			while (tmp && tmp->type != pip && tmp->type != word)
+				tmp = tmp->next;
+			if (!tmp || tmp->type == pip)
+				return (1);
+		}
+		tmp = tmp->next;
+	}
+	return (0);
 }
 
 t_token	*token_syntax(t_token *token)
@@ -58,7 +78,8 @@ t_token	*token_syntax(t_token *token)
 		ret = 1;
 	while (tmp && !ret)
 	{
-		if ((tmp->type == pip && !tmp->next) || (tmp->type >= pip && tmp->next && tmp->next->type >= pip))
+		if ((tmp->type == pip && !tmp->next) || (tmp->type >= pip
+				&& tmp->next && tmp->next->type == pip))
 			ret = 1;
 		if (!tmp->next)
 			break ;
@@ -66,7 +87,7 @@ t_token	*token_syntax(t_token *token)
 	}
 	if (!ret)
 		return (token);
-	printf("Minishell: parse error near '%s'\n", tmp->str);
+	print_err("parse error near ", tmp->str, NULL);
 	ctfree(token, NULL, 't', 2);
 	return (NULL);
 }

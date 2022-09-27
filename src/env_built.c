@@ -3,75 +3,92 @@
 /*                                                        :::      ::::::::   */
 /*   env_built.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/08 16:24:14 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/08 16:25:01 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/24 16:09:36 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		get_equal(char *s)
+void	ex_port_substr(t_token *arg, char **name, char **content)
 {
-	int	i;
-
-	i = 0;
-	if (!s)
-		return (0);
-	if (!ft_isalpha(s[i]) && s[i++] != '_')
-		return (0);
-	while (s[i] && (ft_isalnum(s[i]) || s[i] == '=' || s[i] == '+' || s[i] == '_'))
+	if (get_equal(arg->str) == -1)
 	{
-		if (s[i] == '=' && s[i - 1] == '+')
-			return (-1);
-		else if (s[i] == '=')
-			return (i);
-		i++;
+		*name = ft_substr(arg->str, 0, get_equal2(arg->str));
+		*content = ft_substr(arg->str, (get_equal2(arg->str) + 2),
+				ft_strlen(arg->str));
+		handler(5, NULL, *name, *content);
+	}
+	else
+	{
+		*name = ft_substr(arg->str, 0, get_equal(arg->str));
+		*content = ft_substr(arg->str, (get_equal(arg->str) + 1),
+				ft_strlen(arg->str));
+		handler(3, NULL, *name, *content);
+	}
+}
+
+int	export_test_error(t_token *arg)
+{
+	if (get_equal(arg->str) == 0)
+	{
+		if (!ft_isalpha(arg->str[0]) && arg->str[0] != '_')
+		{
+			print_err("export: ", arg->str, ": not a valid identifier");
+			return (1);
+		}
 	}
 	return (0);
 }
 
-void	ex_port(t_cmd *cmd)
+void	ex_port(t_cmd *cmd, int ret)
 {
 	t_token	*arg;
 	char	*name;
 	char	*content;
 
-	if (cmd->arg->next)
-		arg = cmd->arg->next;
-	else
-		ex_env(cmd);
-	if (get_equal(arg->str) == 0)
-		return ;
-	if (get_equal(arg->str) == -1)
+	if (!cmd->arg->next)
+		return (ex_env(cmd));
+	arg = cmd->arg->next;
+	while (arg)
 	{
-		name = ft_substr(arg->str, 0, get_equal(arg->str));
-		content = ft_substr(arg->str, (get_equal(arg->str) + 2), ft_strlen(arg->str));
-		handler(5, NULL, name, content);
+		if (export_test_error(arg))
+			ret = 1;
+		else
+		{
+			ex_port_substr(arg, &name, &content);
+			free(name);
+			if (get_equal(arg->str) != -1)
+				free(content);
+		}
+		arg = arg->next;
 	}
-	else
-	{
-		name = ft_substr(arg->str, 0, get_equal(arg->str));
-		content = ft_substr(arg->str, (get_equal(arg->str) + 1), ft_strlen(arg->str));
-		handler(3, NULL, name, content);
-	}
-	free(name);
-	free(content);
+	handler(ret, NULL, "?", NULL);
 }
 
 void	ex_unset(t_cmd *cmd)
 {
 	t_token	*arg;
+	int		ret;
 
+	ret = 0;
 	if (!cmd->arg->next)
 		return ;
 	arg = cmd->arg->next;
 	while (arg)
 	{
-		handler(2, NULL, arg->str, NULL);
+		if (!ft_isalpha(arg->str[0]) && arg->str[0] != '_')
+		{
+			print_err("export: ", arg->str, ": not a valid identifier");
+			ret = 1;
+		}
+		else
+			handler(2, NULL, arg->str, NULL);
 		arg = arg->next;
 	}
+	handler(ret, NULL, "?", NULL);
 }
 
 void	ex_env(t_cmd *cmd)
@@ -81,10 +98,14 @@ void	ex_env(t_cmd *cmd)
 	env = handler(3, NULL, NULL, NULL);
 	while (env)
 	{
-		ft_putstr_fd(env->name, cmd->fdout);
-		write(cmd->fdout, "=", 1);
-		ft_putstr_fd(env->content, cmd->fdout);
-		write(cmd->fdout, "\n", 1);
+		if (env->content)
+		{
+			ft_putstr_fd(env->name, cmd->fdout);
+			write(cmd->fdout, "=", 1);
+			ft_putstr_fd(env->content, cmd->fdout);
+			write(cmd->fdout, "\n", 1);
+		}
 		env = env->next;
 	}
+	handler(0, NULL, "?", NULL);
 }

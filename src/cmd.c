@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 16:42:51 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 18:26:38 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/22 19:19:50 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,10 +118,12 @@ t_cmd	*pars_err(t_cmd *cmd)
 		r = cmd->redir;
 		while (r)
 		{
-			if ((r->type == word || r->type == pip)
-				|| (r->type > 3 && r->next && r->next->type >= 3))
+			if ((r->type == word || r->type == pip) || (r->type > 3 && r->next
+					&& r->next->type >= 3) || (r->type > pip && (!r->next
+						|| (r->next && (r->next->type != fout
+								&& r->next->type != fin)))))
 			{
-				printf("Minishell: parse error near '%s'\n", r->str);
+				print_err("parse error near ", r->str, NULL);
 				ctfree(cmd, NULL, 'c', 2);
 				return (NULL);
 			}

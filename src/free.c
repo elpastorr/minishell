@@ -6,7 +6,7 @@
 /*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/15 15:02:15 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 20:51:52 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/20 21:12:34 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	ctfree(void *ptr, char *err, char type, int n)
 	if (type == 'c')
 		free_cmd(ptr);
 	if (err)
-		print_err(err, NULL);
+		print_err(err, NULL, NULL);
 	handler(n, NULL, "?", NULL);
 }
 
@@ -84,7 +84,7 @@ void	exit_free(void *ptr, char *err, char type, int n)
 	else if (type == 'c')
 		free_cmd(ptr);
 	if (err)
-		print_err(err, NULL);
+		print_err(err, NULL, NULL);
 	rl_clear_history();
 	exit(n);
 }

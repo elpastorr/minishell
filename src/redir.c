@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   redir.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/05 16:10:01 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 20:34:19 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/23 17:43:19 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	heredoc(t_cmd *temp, t_cmd *cmd)
+int	heredoc(t_cmd *temp, t_cmd *cmd, t_hd *hd)
 {
 	char	*tmp;
 	t_token	*redir;
 
-	if (!temp || !cmd->redir)
+	if (!temp || !temp->redir)
 		return (-1);
 	tmp = NULL;
 	redir = temp->redir;
@@ -27,23 +27,17 @@ int	heredoc(t_cmd *temp, t_cmd *cmd)
 			tmp = heredoc_extra(redir, tmp, 0);
 		redir = redir->next;
 	}
+	if (hd->rdin == 1)
+		return (cmd->fdin);
 	if (!tmp)
 		tmp = ft_strdup("");
 	return (fd_heredoc(tmp, cmd));
 }
 
-void	print_err(char *file, char *s)
-{
-	ft_putstr_fd("Minishell: ", 2);
-	ft_putstr_fd(file, 2);
-	ft_putstr_fd(s, 2);
-	ft_putstr_fd("\n", 2);
-}
-
 void	close_all_fds(t_cmd *cmd, int opt)
 {
 	t_cmd	*cmd_tmp;
-	t_token *cur;
+	t_token	*cur;
 
 	cmd_tmp = cmd;
 	while (cmd_tmp)
@@ -51,10 +45,10 @@ void	close_all_fds(t_cmd *cmd, int opt)
 		cur = cmd_tmp->redir;
 		while (cur)
 		{
-			if (cur->fd != 0 && opt == 1)
+			if (cur->fd != 0 && cur->fd != -1 && opt == 1)
 				close(cur->fd);
 			else if (cur->fd != cmd_tmp->fdin && cur->fd != cmd_tmp->fdout
-					&& cur->fd != 0 && opt == 0)
+				&& cur->fd != 0 && cur->fd != -1 && opt == 0)
 				close(cur->fd);
 			cur = cur->next;
 		}
@@ -65,49 +59,63 @@ void	close_all_fds(t_cmd *cmd, int opt)
 void	file_err(t_token *tmp, t_cmd *cmd)
 {
 	if (access(tmp->next->str, F_OK) != 0)
-		print_err(tmp->next->str, ": No such file or directory");
+		print_err(tmp->next->str, ": No such file or directory", NULL);
 	else
-		print_err(tmp->next->str, ": Permission denied");
+		print_err(tmp->next->str, ": Permission denied", NULL);
 	close_all_fds(cmd, 1);
 	handler(1, NULL, "?", NULL);
 }
 
-t_cmd	*redir(t_cmd *cmd, int hd)
+void	redir_plus(t_token *token, t_cmd *cmd_tmp, t_cmd *cmd, t_hd *hd)
+{
+	int	oui;
+
+	if (token->type == rout && hd->rdout == 0)
+		cmd_tmp->fdout = open(token->next->str, O_WRONLY
+				| O_CREAT | O_TRUNC, 0644);
+	else if (token->type == rdout && hd->rdout == 0)
+		cmd_tmp->fdout = open(token->next->str, O_WRONLY
+				| O_CREAT | O_APPEND, 0644);
+	else if (token->type == rin && hd->rdin == 0)
+		cmd_tmp->fdin = open(token->next->str, O_RDONLY);
+	get_old_fd_heredoc(cmd, cmd_tmp, token, hd);
+	if (token->type == rdin && hd->here == 0)
+	{
+		oui = dup(0);
+		signal(SIGINT, here_handler_sigint);
+		cmd_tmp->fdin = heredoc(cmd_tmp, cmd, hd);
+		hd->here = 1;
+		dup2(oui, 0);
+		close(oui);
+		catch_signals();
+	}
+	if ((token->type == rout || token->type == rdout) && hd->rdout == 0)
+		token->fd = cmd_tmp->fdout;
+	else if ((token->type == rin || token->type == rdin) && hd->rdin == 0)
+		token->fd = cmd_tmp->fdin;
+}
+
+t_cmd	*redir(t_cmd *cmd)
 {
 	t_cmd	*cmd_tmp;
 	t_token	*token_tmp;
-	int		oui;
+	t_hd	hd;
 
 	cmd_tmp = cmd;
 	while (cmd_tmp)
 	{
+		init_hd_struct(&hd);
 		token_tmp = cmd_tmp->redir;
-		hd = 0;
 		while (token_tmp)
 		{
-			if (token_tmp->type == rout)
-				cmd_tmp->fdout = open(token_tmp->next->str, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			else if (token_tmp->type == rdout)
-				cmd_tmp->fdout = open(token_tmp->next->str, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			else if (token_tmp->type == rin)
-				cmd_tmp->fdin = open(token_tmp->next->str, O_RDONLY);
-			else if (token_tmp->type == rdin && !hd)
-			{
-				oui = dup(0); //on copie l'entree standard
-				signal(SIGINT, here_handler_sigint); //on la ferme pour fermer l'entree de readline et donc fermer le heredoc
-				cmd_tmp->fdin = heredoc(cmd_tmp, cmd);
-				hd = 1;
-				dup2(oui, 0); // comme elle a ete fermee on la remplace par sa copie et la retrouve en tant qu'entree standard normale
-				close(oui); //on ferme la copie
-				catch_signals();
-			}
-			if (token_tmp->type == rout || token_tmp->type == rdout)
-				token_tmp->fd = cmd_tmp->fdout;
-			else if (token_tmp->type == rin || token_tmp->type == rdin)
-				token_tmp->fd = cmd_tmp->fdin;
+			redir_plus(token_tmp, cmd_tmp, cmd, &hd);
 			if (token_tmp->fd == -1)
-				return (file_err(token_tmp, cmd_tmp), NULL);
-			printf("token fd : %d, cmd fd : %d\n", token_tmp->fd, cmd_tmp->fdin);
+			{
+				if (get_cmd_size(cmd) == 1)
+					return (file_err(token_tmp, cmd_tmp), NULL);
+				else
+					set_error_hd(token_tmp, cmd_tmp, &hd);
+			}
 			token_tmp = token_tmp->next;
 		}
 		cmd_tmp = cmd_tmp->next;

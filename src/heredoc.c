@@ -6,13 +6,13 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/30 14:31:27 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 17:36:54 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/24 18:33:33 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		is_heredoc(t_cmd *cmd)
+int	is_heredoc(t_cmd *cmd)
 {
 	t_token	*redir;
 
@@ -62,10 +62,11 @@ char	*read_heredoc(char *s, char *tmp)
 	i = 0;
 	while (s && s[i])
 	{
-		if (s[i] == '$' && !quot_status(s, i) && (ft_isalnum(s[i + 1])
-			|| s[i + 1] == '_' || s[i + 1] == '?' || s[i + 1] == '$'))
+		if (s[i] == '$' && (ft_isalnum(s[i + 1])
+				|| s[i + 1] == '_' || s[i + 1] == '?' || s[i + 1] == '$'))
 			s = expend_words(s, i);
-		i++;
+		if (s[i] != '$')
+			i++;
 	}
 	return (heredoc_strcat(tmp, s));
 }
@@ -92,26 +93,6 @@ char	*heredoc_extra(t_token *redir, char *tmp, int ret)
 	if (s)
 		free(s);
 	return (tmp);
-}
-
-int	fd_is_already_used(int fd, t_cmd *cmd)
-{
-	t_cmd	*tmp;
-	t_token	*redir;
-
-	tmp = cmd;
-	while (tmp)
-	{
-		redir = tmp->redir;
-		while (redir)
-		{
-			if (fd == redir->fd)
-				return (1);
-			redir = redir->next;
-		}
-		tmp = tmp->next;
-	}
-	return (0);
 }
 
 int	fd_heredoc(char *s, t_cmd *cmd)

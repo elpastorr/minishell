@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
+/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 16:53:21 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 18:39:06 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/24 19:05:41 by eleotard         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,19 +98,19 @@ void	tokenizing(t_token *token)
 			while (tmp->str && tmp->str[i])
 			{
 				if (tmp->str[i] == '$' && quot_status(tmp->str, i) != 1
-					&& (ft_isalnum(tmp->str[i + 1]) || tmp->str[i + 1] == '_'
-						|| tmp->str[i + 1] == '?' || tmp->str[i + 1] == '$'))
+					&& ft_isalnumplus(tmp->str[i + 1]))
 					tmp->str = expend_words(tmp->str, i);
-				else
-					tmp->str = del_unused_quot(tmp->str);
-				i++;
+				if (tmp->str[i] != '$' || quot_status(tmp->str, i) == 1)
+					i++;
+				if (i > (int)ft_strlen(tmp->str))
+					break ;
 			}
 		}
 		tmp = tmp->next;
 	}
 	if (!token)
 		return ;
-	create_cmd(token);
+	create_cmd(del_unused_quot_plus(token));
 }
 
 void	create_cmd(t_token *token)
@@ -136,7 +136,7 @@ void	create_cmd(t_token *token)
 	}
 	if (!temp || !pars_err(temp))
 		return ;
-	if (!redir(temp, 0))
+	if (!redir(temp) && get_cmd_size(temp) == 1)
 		return (ctfree(temp, NULL, 'c', 1));
-	parent(temp);
+	parent(temp, 0);
 }

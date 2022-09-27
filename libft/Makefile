@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+         #
+#    By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2021/11/25 14:52:12 by elpastor          #+#    #+#              #
-#    Updated: 2022/09/15 17:21:31 by eleotard         ###   ########.fr        #
+#    Updated: 2022/09/21 15:35:32 by elpastor         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ ft_isdigit.c \
 ft_memset.c \
 ft_strdup.c \
 ft_strncmp.c \
-ft_newstr.c ft_strcat.c ft_strndup.c ft_memdel.c ft_strcmp.c
+ft_newstr.c ft_strcat.c ft_strndup.c ft_memdel.c ft_strcmp.c ft_isspace.c
 
 
 OBJS = ${SRCS:.c=.o}

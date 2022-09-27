@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 17:14:53 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/19 18:25:17 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/24 18:38:55 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*expand_extra(char *tmp, char *util, int *j, int i)
 
 	while (ft_isalnum(tmp[*j]) || tmp[*j] == '_')
 		(*j)++;
-	util = ft_strndup(&tmp[i + 1], (*j - i + 1));
+	util = ft_strndup(&tmp[i + 1], (*j - i - 1));
 	if (util)
 	{
 		var = handler(3, NULL, util, NULL);
@@ -68,7 +68,7 @@ char	*expend_words(char *s, int i)
 	tmp = replace_str(tmp, util, j, i);
 	if (!tmp)
 		return (NULL);
-	return (del_unused_quot(tmp));
+	return (tmp);
 }
 
 char	*replace_str(char *str, char *new, int j, int i)
@@ -82,7 +82,8 @@ char	*replace_str(char *str, char *new, int j, int i)
 	{
 		if (new)
 			free(new);
-		free(str);
+		if (str)
+			free(str);
 		return (NULL);
 	}
 	if (str)

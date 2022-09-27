@@ -6,7 +6,7 @@
 /*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:07:52 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/13 15:47:28 by elpastor         ###   ########.fr       */
+/*   Updated: 2022/09/23 19:12:02 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,15 @@ t_cmd	*cmd_init(t_cmd *res, t_token **tmp, t_token *token)
 	temp->next = NULL;
 	free_token(temp);
 	return (data);
+}
+
+void	mod_env_extra(t_env *tmp, char *content, int opt)
+{
+	if (content && opt == 5)
+		tmp->content = ft_strjoin_free(tmp->content, content, 2);
+	else if (content && opt == 3)
+	{
+		free(tmp->content);
+		tmp->content = ft_strdup(content);
+	}
 }

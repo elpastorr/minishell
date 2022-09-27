@@ -3,14 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   get.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: eleotard <eleotard@student.42.fr>          +#+  +:+       +#+        */
+/*   By: elpastor <elpastor@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:20:09 by elpastor          #+#    #+#             */
-/*   Updated: 2022/09/20 18:08:39 by eleotard         ###   ########.fr       */
+/*   Updated: 2022/09/21 15:15:13 by elpastor         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	get_equal(char *s)
+{
+	int	i;
+
+	i = 0;
+	if (!s)
+		return (0);
+	if (!ft_isalpha(s[i]) && s[i++] != '_')
+		return (0);
+	while (s[i] && (ft_isalnum(s[i]) || s[i] == '='
+			|| s[i] == '+' || s[i] == '_'))
+	{
+		if (s[i] == '=' && s[i - 1] == '+')
+			return (-1);
+		else if (s[i] == '=')
+			return (i);
+		i++;
+	}
+	return (0);
+}
 
 char	*get_name(char *env)
 {
